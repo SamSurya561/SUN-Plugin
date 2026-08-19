@@ -5,11 +5,16 @@ All notable changes to the SUN Plugin will be documented in this file.
 ## [0.5.0] - 2026-08-20
 
 ### Added
-- **Native MOGRT Parameter Editing**: Built a robust ExtendScript bridge enabling Live Sync editing of active MOGRT templates natively inside the plugin's new Edit tab (Sliders, Checkboxes, Colors, Text).
-- **Custom User Folders (Collections)**: Added complete organizational control allowing users to create, rename, and delete custom folders in the sidebar.
-- **Contextual Folder Imports**: Importing assets while viewing a custom folder now automatically adds those assets to the active folder.
-- **Cleaned Up MOGRT Library**: Generated clean thumbnail previews and removed 3rd-party watermarks/branding from the provided asset corpus.
-- **Improved Installer**: Windows uninstaller now correctly pulls the high-res SUN Plugin icon in the Settings app.
+- **Native MOGRT Parameter Editing**: Built a robust ExtendScript bridge (`sunGetSelectedMogrtParams`, `sunUpdateMogrtParam`) enabling live-sync editing of active MOGRT templates natively inside the plugin's new **Edit** tab — Sliders, Checkboxes, Colors, and Text fields.
+- **Custom User Folders (Collections)**: Full organizational control — create, rename, and delete custom folders in the sidebar to group assets your way.
+- **Contextual Folder Imports**: Importing assets while viewing a custom folder automatically assigns them to that folder.
+- **Words / Letters / Lines Categories**: MOGRT assets are now properly organized into **Words**, **Letters**, and **Lines** categories with animation-type subcategories (Fade, Position, Scale, Rotate).
+- **Real MOGRT Thumbnail Previews**: Every MOGRT asset now displays its actual embedded preview image instead of a generic placeholder icon.
+- **Clean Asset Library**: Replaced the mixed development corpus with a curated MOGRT-only library. All metadata rewritten to credit `@SUN-Plugins`.
+
+### Fixed
+- **Version Display**: The UI footer now correctly shows `v0.5.0` (was hardcoded to `v0.4.0`).
+- **Windows Settings Icon**: The uninstaller entry in Windows Settings now correctly displays the SUN Plugin icon.
 
 ## [0.4.0] - 2026-08-20
 
