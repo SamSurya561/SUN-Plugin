@@ -1,15 +1,15 @@
-; Sun Plugin — Inno Setup installer script
-; Produces SunPluginSetup.exe that installs the CEP extension for Premiere Pro.
+; SUN Plugin — Inno Setup installer script
+; Produces SUNPluginSetup.exe that installs the CEP extension for Premiere Pro.
 ;
-; Installs to: %APPDATA%\Adobe\CEP\extensions\com.sunplugin.premiere\
+; Installs to: %APPDATA%\Adobe\CEP\extensions\com.sun.plugin\
 ; Creates:     %USERPROFILE%\Documents\Sun Plugin\ (library root)
 ; Sets:        HKCU\Software\Adobe\CSXS.* PlayerDebugMode=1 (for unsigned ext)
 
-#define MyAppName "Sun Plugin"
-#define MyAppVersion "0.1.0"
-#define MyAppPublisher "Sun Plugin"
+#define MyAppName "SUN Plugin"
+#define MyAppVersion "0.3.0"
+#define MyAppPublisher "SUN Plugin"
 #define MyAppURL "https://sunplugin.com"
-#define ExtensionId "com.sunplugin.premiere"
+#define ExtensionId "com.sun.plugin"
 
 [Setup]
 AppId={{B5F8C3D1-7E4A-4B9F-A2D6-1C3E5F8B9D2A}
@@ -24,7 +24,7 @@ DisableProgramGroupPage=yes
 LicenseFile=
 ; Output settings
 OutputDir=Output
-OutputBaseFilename=SunPluginSetup
+OutputBaseFilename=SUNPluginSetup
 ; Use LZMA2 for best compression
 Compression=lzma2/ultra64
 SolidCompression=yes
@@ -46,11 +46,11 @@ UninstallDisplayName={#MyAppName} for Premiere Pro
 Name: "english"; MessagesFile: "compiler:Default.isl"
 
 [Messages]
-WelcomeLabel2=This will install {#MyAppName} v{#MyAppVersion} as an extension for Adobe Premiere Pro.%n%nThe extension will appear under Window > Extensions > Sun Library.%n%nPlease close Premiere Pro before continuing.
+WelcomeLabel2=This will install {#MyAppName} v{#MyAppVersion} as an extension for Adobe Premiere Pro.%n%nThe extension will appear under Window > Extensions > SUN Plugin.%n%nPlease close Premiere Pro before continuing.
 
 [Files]
 ; Copy the entire built extension
-Source: "..\build\com.sunplugin.premiere\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "..\build\com.sun.plugin\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
 
 [Dirs]
 ; Create the library folder structure in Documents

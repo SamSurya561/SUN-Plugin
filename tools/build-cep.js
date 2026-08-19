@@ -18,9 +18,9 @@ const { execSync } = require("child_process");
 
 const ROOT = path.resolve(__dirname, "..");
 const CEP_SRC = path.join(ROOT, "cep");
-const BUILD = path.join(ROOT, "build", "com.sunplugin.premiere");
+const BUILD = path.join(ROOT, "build", "com.sun.plugin");
 
-const EXTENSION_ID = "com.sunplugin.premiere";
+const EXTENSION_ID = "com.sun.plugin";
 
 /* ---------------------------------------------------------------- helpers */
 
@@ -73,10 +73,7 @@ ensureDir(BUILD);
 console.log("2. Copying CEP extension files...");
 copyDir(CEP_SRC, BUILD);
 
-// 3. Copy panel UI files
-console.log("3. Copying panel UI...");
-copyFile(path.join(ROOT, "src", "ui", "panel.css"), path.join(BUILD, "panel.css"));
-copyFile(path.join(ROOT, "src", "ui", "panel.js"), path.join(BUILD, "panel.js"));
+// 3. (UI is now built by Vite, so we skip copying panel files here)
 
 // Copy preview index for fallback
 if (fs.existsSync(path.join(ROOT, "src", "ui", "index-preview.json"))) {

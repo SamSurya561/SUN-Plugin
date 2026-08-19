@@ -275,9 +275,11 @@ const grid = {
 
   createCell(asset, index) {
     const node = document.createElement("div");
-    node.className = "cell" + (state.selected === asset.id ? " is-selected" : "");
+    const isTextCard = asset.type === "caption" || (asset.type === "preset" && asset.category === "text");
+    node.className = "cell" + (state.selected === asset.id ? " is-selected" : "") + (isTextCard ? " cell-text-card" : "");
     node.dataset.id = asset.id;
     node.dataset.index = index;
+    node.draggable = true;
 
     const color = TYPE_COLORS[asset.type] || "#8c8c96";
     const thumb = host.thumbUrl(asset);
@@ -289,10 +291,12 @@ const grid = {
     else badges.push('<em class="badge badge-mine">MINE</em>');
 
     node.innerHTML = `
-      <div class="cell-thumb${thumb ? "" : " is-missing"}">
-        ${thumb
-          ? `<img loading="lazy" src="${escapeHtml(thumb)}" alt="">`
-          : `<svg width="26" height="26" style="opacity:.3"><use href="#sunMark"/></svg>`}
+      <div class="cell-thumb${thumb && !isTextCard ? "" : " is-missing"}">
+        ${isTextCard 
+          ? `<div class="cell-thumb-text">${escapeHtml(asset.name.replace(/Preset|Caption|Text/gi, '').trim())}</div>`
+          : thumb 
+            ? `<img loading="lazy" src="${escapeHtml(thumb)}" alt="">`
+            : `<svg width="26" height="26" style="opacity:.3"><use href="#sunMark"/></svg>`}
         <div class="cell-flags">${badges.join("")}</div>
         ${asset.favorite ? '<div class="cell-fav">&#9733;</div>' : ""}
         ${duration ? `<div class="cell-duration">${duration}</div>` : ""}
@@ -307,6 +311,11 @@ const grid = {
 
     node.addEventListener("click", () => selectAsset(asset.id));
     node.addEventListener("dblclick", () => insertAsset(asset.id));
+    node.addEventListener("dragstart", (e) => {
+      if (asset.path) {
+        e.dataTransfer.setData("com.adobe.cep.dnd.file.0", asset.path);
+      }
+    });
     return node;
   },
 };
@@ -335,28 +344,61 @@ async function refresh() {
 }
 
 async function refreshFacets() {
-  const facets = await host.facets(currentQuery({ limit: 0 }));
+  const q = currentQuery({ limit: 0 });
+  delete q.type; delete q.category; delete q.text; // We want the full tree for the current view
+  const allResults = await host.query(q);
+  
+  const tree = new Map();
+  for (const a of allResults.results) {
+    if (!a.type) continue;
+    if (!tree.has(a.type)) tree.set(a.type, new Map());
+    const cats = tree.get(a.type);
+    const cat = a.category || "General";
+    cats.set(cat, (cats.get(cat) || 0) + 1);
+  }
 
-  const renderList = (container, items, key) => {
+  const container = document.getElementById("tree-view");
+  if (container) {
     container.innerHTML = "";
-    for (const item of items.slice(0, 12)) {
-      const button = document.createElement("button");
-      button.className = "facet-item" + (state[key] === item.value ? " is-active" : "");
-      const color = key === "type" ? (TYPE_COLORS[item.value] || "#8c8c96") : "transparent";
-      button.innerHTML = `
-        <span class="facet-swatch" style="background:${color}"></span>
-        <span class="facet-label">${escapeHtml(item.value)}</span>
-        <span class="count">${item.count}</span>`;
-      button.addEventListener("click", () => {
-        state[key] = state[key] === item.value ? null : item.value;
-        refresh();
+    for (const [type, cats] of Array.from(tree.entries()).sort((a,b) => a[0].localeCompare(b[0]))) {
+      const details = document.createElement("details");
+      details.className = "tree-node";
+      if (state.type === type || !state.type) details.open = true;
+      
+      const typeTotal = Array.from(cats.values()).reduce((sum, count) => sum + count, 0);
+      
+      details.innerHTML = `
+        <summary class="tree-summary" onclick="event.preventDefault(); this.parentElement.open = !this.parentElement.open;">
+          <span><span class="tree-icon">▶</span>${escapeHtml(type.toUpperCase())}</span>
+          <span class="count">${typeTotal}</span>
+        </summary>
+        <div class="tree-children"></div>
+      `;
+      
+      const children = details.querySelector(".tree-children");
+      
+      const allBtn = document.createElement("button");
+      allBtn.className = "tree-item" + (state.type === type && !state.category ? " is-active" : "");
+      allBtn.innerHTML = `<span>All</span><span class="count">${typeTotal}</span>`;
+      allBtn.addEventListener("click", () => {
+        state.type = type; state.category = null; refresh();
       });
-      container.appendChild(button);
+      children.appendChild(allBtn);
+      
+      for (const [cat, count] of Array.from(cats.entries()).sort((a,b) => a[0].localeCompare(b[0]))) {
+        const btn = document.createElement("button");
+        btn.className = "tree-item" + (state.type === type && state.category === cat ? " is-active" : "");
+        btn.innerHTML = `<span>${escapeHtml(cat)}</span><span class="count">${count}</span>`;
+        btn.addEventListener("click", () => {
+          state.type = type; state.category = cat; refresh();
+        });
+        children.appendChild(btn);
+      }
+      container.appendChild(details);
     }
-  };
+  }
 
-  renderList(el("facet-type"), facets.type || [], "type");
-  renderList(el("facet-category"), facets.category || [], "category");
+  const facets = await host.facets(currentQuery({ limit: 0 }));
 
   const tagBox = el("facet-tags");
   tagBox.innerHTML = "";
@@ -474,6 +516,53 @@ async function selectAsset(id) {
 
   el("act-favorite").textContent = asset.favorite ? "Unfavourite" : "Favourite";
   el("act-insert").disabled = !asset.file;
+  
+  if (!document.getElementById("view-edit").hidden) {
+    renderEditView();
+  }
+}
+
+function renderEditView() {
+  const asset = state.results.find((a) => a.id === state.selected);
+  const empty = el("edit-empty");
+  const content = el("edit-content");
+  
+  if (!asset) {
+    empty.hidden = false;
+    content.hidden = true;
+    return;
+  }
+  
+  empty.hidden = true;
+  content.hidden = false;
+  el("edit-title").textContent = asset.name;
+  
+  const form = el("edit-form");
+  form.innerHTML = "";
+  
+  // Simulated parameter rendering based on MOGRT parameter structures
+  const params = asset.parameters || [
+    { name: "Primary Text", type: "text", value: asset.name },
+    { name: "Secondary Text", type: "text", value: "Subtitle" },
+    { name: "Scale", type: "slider", value: 100 },
+    { name: "Color", type: "color", value: "#ffffff" }
+  ];
+  
+  for (const param of params) {
+    const group = document.createElement("div");
+    group.className = "form-group";
+    if (param.type === "color") {
+       group.innerHTML = `<label>${escapeHtml(param.name)}</label>
+                          <input type="color" class="form-control" style="height:40px;padding:4px;" value="${param.value}">`;
+    } else if (param.type === "slider") {
+       group.innerHTML = `<label>${escapeHtml(param.name)}</label>
+                          <input type="range" class="form-control" min="0" max="200" value="${param.value}">`;
+    } else {
+       group.innerHTML = `<label>${escapeHtml(param.name)}</label>
+                          <input type="text" class="form-control" value="${escapeHtml(param.value || '')}">`;
+    }
+    form.appendChild(group);
+  }
 }
 
 async function insertAsset(id) {
@@ -512,6 +601,26 @@ function wire() {
       button.classList.add("is-active");
       state.view = button.dataset.view;
       refresh();
+    });
+  }
+
+  for (const button of document.querySelectorAll(".tab-btn")) {
+    button.addEventListener("click", () => {
+      for (const b of document.querySelectorAll(".tab-btn")) b.classList.remove("is-active");
+      button.classList.add("is-active");
+      const tab = button.dataset.tab;
+      el("view-browse").hidden = tab !== "browse";
+      el("view-edit").hidden = tab !== "edit";
+      if (tab === "edit") {
+        renderEditView();
+      }
+    });
+  }
+
+  const editInsert = el("btn-edit-insert");
+  if (editInsert) {
+    editInsert.addEventListener("click", () => {
+      if (state.selected) insertAsset(state.selected);
     });
   }
 

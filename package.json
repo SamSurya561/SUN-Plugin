@@ -1,10 +1,13 @@
 {
   "name": "sun-plugin",
-  "version": "0.1.0",
+  "version": "0.3.0",
   "description": "Sun Plugin — asset library and workflow toolkit for Adobe Premiere Pro",
   "private": true,
   "main": "src/ui/index.html",
   "scripts": {
+    "dev": "vite",
+    "build:ui": "vite build",
+    "build": "node tools/build-cep.js && npm run build:ui",
     "branding": "node tools/generate-branding.js",
     "sun": "node tools/sun.js",
     "init": "node tools/sun.js init",
@@ -18,8 +21,20 @@
   "engines": {
     "node": ">=18"
   },
-  "dependencies": {},
-  "devDependencies": {},
+  "dependencies": {
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "lucide-react": "^0.292.0",
+    "clsx": "^2.0.0",
+    "tailwind-merge": "^2.0.0"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^4.2.0",
+    "autoprefixer": "^10.4.16",
+    "postcss": "^8.4.31",
+    "tailwindcss": "^3.3.5",
+    "vite": "^5.0.0"
+  },
   "sunPlugin": {
     "developmentAssetMode": false,
     "libraryRoot": "~/Documents/Sun Plugin"

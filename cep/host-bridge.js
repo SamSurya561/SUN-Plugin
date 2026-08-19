@@ -167,12 +167,7 @@
                 return { ok: false, error: "file not found: " + absPath };
             }
 
-            if (asset.syntheticFixture) {
-                return {
-                    ok: false,
-                    error: "this is a development fixture, not a functional template. Use Replace File to point it at a real one."
-                };
-            }
+            // Allow fixtures to be inserted if the user demands it, though Premiere may reject them natively.
 
             // Mark the asset as used.
             plugin.markUsed(id);
@@ -219,6 +214,13 @@
          */
         thumbUrl: function (asset) {
             return thumbFileUrl(asset);
+        },
+
+        /**
+         * Resolve an asset file relative path to absolute OS path
+         */
+        toAbsolute: function (relPath) {
+            return pathsModule.toAbsolute(relPath);
         }
     };
 

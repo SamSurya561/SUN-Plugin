@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ExtensionManifest Version="12.0"
-                   ExtensionBundleId="com.sunplugin.premiere"
-                   ExtensionBundleVersion="0.1.0"
-                   ExtensionBundleName="Sun Plugin">
+                   ExtensionBundleId="com.sun.plugin"
+                   ExtensionBundleVersion="0.3.0"
+                   ExtensionBundleName="SUN Plugin">
 
   <ExtensionList>
-    <Extension Id="com.sunplugin.premiere.panel" Version="0.1.0"/>
+    <Extension Id="com.sun.plugin.panel" Version="0.3.0"/>
   </ExtensionList>
 
   <ExecutionEnvironment>
@@ -22,7 +22,7 @@
   </ExecutionEnvironment>
 
   <DispatchInfoList>
-    <Extension Id="com.sunplugin.premiere.panel">
+    <Extension Id="com.sun.plugin.panel">
       <DispatchInfo>
         <Resources>
           <MainPath>./index.html</MainPath>
@@ -38,7 +38,7 @@
         </Lifecycle>
         <UI>
           <Type>Panel</Type>
-          <Menu>Sun Library</Menu>
+          <Menu>SUN Plugin</Menu>
           <Geometry>
             <Size>
               <Width>420</Width>
