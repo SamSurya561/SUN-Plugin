@@ -62,12 +62,15 @@ function countFiles(dir) {
 
 /* ------------------------------------------------------------------ build */
 
-console.log("=== Sun Plugin CEP Build ===\n");
+const args = process.argv.slice(2);
 
-// 1. Clean previous build
-console.log("1. Cleaning build directory...");
-clean(BUILD);
-ensureDir(BUILD);
+if (!args.includes("--skip-build")) {
+    console.log("=== Sun Plugin CEP Build ===\n");
+
+    // 1. Clean previous build
+    console.log("1. Cleaning build directory...");
+    clean(BUILD);
+    ensureDir(BUILD);
 
 // 2. Copy CEP-specific files (manifest, CSInterface, host bridge, etc.)
 console.log("2. Copying CEP extension files...");
@@ -123,9 +126,9 @@ for (const file of fs.readdirSync(iconsDir)) {
 const fileCount = countFiles(BUILD);
 console.log(`\n✓ Build complete: ${fileCount} files in build/com.sunplugin.premiere/\n`);
 
-/* ------------------------------------------------------- optional actions */
+}
 
-const args = process.argv.slice(2);
+/* ------------------------------------------------------- optional actions */
 
 if (args.includes("--install")) {
     const cepDir = path.join(
