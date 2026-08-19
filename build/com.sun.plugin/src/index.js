@@ -115,6 +115,9 @@ class SunPlugin {
   toggleFavorite(id) { return collections.toggleFavorite(this.db, id); }
   addToCollection(id, name) { return collections.addToCollection(this.db, id, name); }
   removeFromCollection(id, name) { return collections.removeFromCollection(this.db, id, name); }
+  createCollection(name, desc) { return collections.createCollection(this.db, name, desc); }
+  renameCollection(from, to) { return collections.renameCollection(this.db, from, to); }
+  deleteCollection(name) { return collections.deleteCollection(this.db, name); }
   listCollections() { return collections.listCollections(this.db); }
   listRecent(limit) { return collections.listRecent(this.db, limit); }
   markUsed(id) { return collections.markUsed(this.db, id); }

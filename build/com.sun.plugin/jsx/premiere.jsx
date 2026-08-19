@@ -214,3 +214,126 @@ function sunInsertAsset(filePath, assetType) {
         return JSON.stringify({ ok: false, error: e.toString() });
     }
 }
+
+/**
+ * Get parameters for the selected MOGRT in the timeline.
+ * @returns {string} JSON array of parameters.
+ */
+function sunGetSelectedMogrtParams() {
+    try {
+        var s = app.project.activeSequence;
+        if (!s) return JSON.stringify({ ok: false, error: "No active sequence." });
+        
+        var sel = s.getSelection();
+        if (!sel || sel.length === 0) return JSON.stringify({ ok: false, error: "Please select a MOGRT clip on the timeline." });
+        
+        var clip = sel[0];
+        var mgt = typeof clip.getMGTComponent === "function" ? clip.getMGTComponent() : null;
+        if (!mgt) {
+            // Fallback for older versions: search components by name
+            for (var i = 0; i < clip.components.numItems; i++) {
+                if (clip.components[i].matchName === "AE.ADBE Text" || clip.components[i].displayName.indexOf("Graphic") !== -1) {
+                    mgt = clip.components[i];
+                    break;
+                }
+            }
+        }
+        
+        if (!mgt) return JSON.stringify({ ok: false, error: "Selected clip is not a MOGRT or has no editable parameters." });
+        
+        var params = [];
+        var props = mgt.properties;
+        for (var j = 0; j < props.numItems; j++) {
+            var p = props[j];
+            var type = "unknown";
+            var val = "";
+            try { val = p.getValue(); } catch(e) {}
+            
+            // Try to infer type
+            if (p.displayName.indexOf("Color") !== -1) type = "color";
+            else if (typeof val === "boolean" || p.displayName.indexOf("Grid") !== -1 || p.displayName.indexOf("Frame") !== -1 || val === "true" || val === "false") type = "checkbox";
+            else if (typeof val === "number" || !isNaN(parseFloat(val))) type = "slider";
+            else if (typeof val === "string") type = "text";
+            
+            // For MOGRT Text, PPro 15+ has getTextEditValue() which returns a JSON string
+            if (typeof p.getTextEditValue === "function") {
+                try {
+                    var tv = p.getTextEditValue();
+                    if (tv) {
+                        val = JSON.parse(tv).textEditValue;
+                        type = "text";
+                    }
+                } catch(e) {}
+            }
+            
+            // For colors, PPro 15+ has getColorValue() which returns [R,G,B,A]
+            if (typeof p.getColorValue === "function" && type === "color") {
+                try {
+                    var cv = p.getColorValue();
+                    val = cv; // array of 0-255
+                } catch(e) {}
+            }
+
+            params.push({
+                index: j,
+                name: p.displayName,
+                type: type,
+                value: val
+            });
+        }
+        
+        return JSON.stringify({ ok: true, params: params });
+    } catch (e) {
+        return JSON.stringify({ ok: false, error: e.toString() });
+    }
+}
+
+/**
+ * Update a parameter on the selected MOGRT.
+ * @param {number} paramIndex 
+ * @param {string|number|boolean} value 
+ */
+function sunUpdateMogrtParam(paramIndex, value) {
+    try {
+        var s = app.project.activeSequence;
+        if (!s) return JSON.stringify({ ok: false, error: "No active sequence." });
+        var sel = s.getSelection();
+        if (!sel || sel.length === 0) return JSON.stringify({ ok: false, error: "No clip selected." });
+        
+        var clip = sel[0];
+        var mgt = typeof clip.getMGTComponent === "function" ? clip.getMGTComponent() : null;
+        if (!mgt) {
+            for (var i = 0; i < clip.components.numItems; i++) {
+                if (clip.components[i].matchName === "AE.ADBE Text" || clip.components[i].displayName.indexOf("Graphic") !== -1) {
+                    mgt = clip.components[i];
+                    break;
+                }
+            }
+        }
+        
+        if (!mgt) return JSON.stringify({ ok: false, error: "Not a MOGRT." });
+        
+        var prop = mgt.properties[paramIndex];
+        if (!prop) return JSON.stringify({ ok: false, error: "Parameter not found." });
+        
+        // Handle specific setter types if available (PPro 15+)
+        if (typeof prop.getColorValue === "function" && Array.isArray(value)) {
+            prop.setColorValue(value[0], value[1], value[2], value[3] || 255);
+        } else if (typeof prop.getTextEditValue === "function" && typeof value === "string") {
+            try {
+                var json = prop.getTextEditValue();
+                var obj = JSON.parse(json);
+                obj.textEditValue = value;
+                prop.setTextEditValue(JSON.stringify(obj));
+            } catch(e) {
+                prop.setValue(value, true);
+            }
+        } else {
+            prop.setValue(value, true);
+        }
+        
+        return JSON.stringify({ ok: true });
+    } catch (e) {
+        return JSON.stringify({ ok: false, error: e.toString() });
+    }
+}

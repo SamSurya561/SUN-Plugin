@@ -83,6 +83,12 @@ export default function App() {
   const [draggingId, setDraggingId] = useState(null);
   const [showSettings, setShowSettings] = useState(false);
   const [showTemplateModal, setShowTemplateModal] = useState(false);
+  const [collections, setCollections] = useState([]);
+  const [editingCollection, setEditingCollection] = useState(null);
+  const [newCollectionName, setNewCollectionName] = useState('');
+  const [activeTab, setActiveTab] = useState('browse'); // 'browse' | 'edit'
+  const [mogrtParams, setMogrtParams] = useState(null);
+  const [mogrtError, setMogrtError] = useState(null);
   const searchRef = useRef(null);
   const ghostRef = useRef(null);
 
@@ -94,9 +100,17 @@ export default function App() {
       if (typeFilter) q.type = typeFilter;
       if (catFilter) q.category = catFilter;
       if (activeView === 'favorites') q.favorite = true;
+      if (activeView.startsWith('collection:')) {
+          q.collection = activeView.replace('collection:', '');
+      }
 
       const res = await host.query(q);
       let items = res.results || [];
+
+      if (host.collections) {
+          const colls = await host.collections();
+          setCollections(colls || []);
+      }
 
       // Sort
       items.sort((a, b) => {
@@ -191,7 +205,11 @@ export default function App() {
   const handleImport = useCallback(async () => {
     if (!host) return;
     setStatus('Selecting files...');
-    const r = await host.command('import-dialog');
+    let opts = {};
+    if (activeView.startsWith('collection:')) {
+        opts.collection = activeView.replace('collection:', '');
+    }
+    const r = await host.command('import-dialog', opts);
     if (r?.ok) {
         setStatus(`Imported ${r.imported || 0} assets`);
         fetchAssets();
@@ -199,7 +217,7 @@ export default function App() {
         setStatus(r?.error || 'Import cancelled or failed');
     }
     setTimeout(() => setStatus('Ready'), 3000);
-  }, [fetchAssets]);
+  }, [fetchAssets, activeView]);
 
   const handleTemplateImport = useCallback(async () => {
     if (!host) return;
@@ -226,6 +244,79 @@ export default function App() {
     setActiveView('all');
     setTypeFilter(type);
     setCatFilter(cat || null);
+  };
+
+  /* ── Collections API ────────────────────────────────────────────── */
+  const handleCreateCollection = async (name) => {
+      if (!name || !host || !host.createCollection) return;
+      await host.createCollection(name);
+      setEditingCollection(null);
+      setNewCollectionName('');
+      fetchAssets();
+  };
+  const handleDeleteCollection = async (name) => {
+      if (!host || !host.deleteCollection || !confirm(`Delete folder "${name}"? Assets will not be deleted.`)) return;
+      await host.deleteCollection(name);
+      if (activeView === `collection:${name}`) setView('all');
+      fetchAssets();
+  };
+  const handleRenameCollection = async (oldName, newName) => {
+      if (!newName || !host || !host.renameCollection) return;
+      await host.renameCollection(oldName, newName);
+      if (activeView === `collection:${oldName}`) setView(`collection:${newName}`);
+      setEditingCollection(null);
+      fetchAssets();
+  };
+
+  /* ── MOGRT Editing ──────────────────────────────────────────────── */
+  const fetchMogrtParams = useCallback(async () => {
+      if (!host || !host.getMogrtParams) return;
+      setStatus('Loading clip parameters...');
+      setMogrtError(null);
+      const res = await host.getMogrtParams();
+      if (res && res.ok && res.params) {
+          setMogrtParams(res.params);
+          setStatus('Clip loaded');
+      } else {
+          setMogrtParams(null);
+          setMogrtError(res?.error || 'Failed to load clip parameters');
+          setStatus('Ready');
+      }
+  }, []);
+
+  const updateMogrtParam = useCallback(async (index, value) => {
+      if (!host || !host.updateMogrtParam) return;
+      
+      // Optimistic update in UI
+      setMogrtParams(prev => {
+          if (!prev) return prev;
+          const next = [...prev];
+          next[index] = { ...next[index], value };
+          return next;
+      });
+
+      const res = await host.updateMogrtParam(index, value);
+      if (!res?.ok) {
+          console.error('Failed to update parameter', res?.error);
+      }
+  }, []);
+
+  // Helper to convert array [R,G,B,A] to hex for input type="color"
+  const rgbaToHex = (arr) => {
+      if (!Array.isArray(arr) || arr.length < 3) return '#000000';
+      const r = Math.round(arr[0]).toString(16).padStart(2, '0');
+      const g = Math.round(arr[1]).toString(16).padStart(2, '0');
+      const b = Math.round(arr[2]).toString(16).padStart(2, '0');
+      return `#${r}${g}${b}`;
+  };
+  const hexToRgba = (hex) => {
+      const h = hex.replace('#', '');
+      return [
+          parseInt(h.substring(0,2), 16),
+          parseInt(h.substring(2,4), 16),
+          parseInt(h.substring(4,6), 16),
+          255
+      ];
   };
 
   /* ── Thumbnail helper ──────────────────────────────────────────── */
@@ -271,6 +362,10 @@ export default function App() {
 
         {/* Actions */}
         <div className="flex items-center gap-1.5 shrink-0">
+          <div className="flex bg-zinc-900 rounded-xl p-0.5 border border-zinc-800/80 mr-4">
+              <button onClick={() => setActiveTab('browse')} className={cn('px-4 py-1.5 rounded-lg text-[12px] font-semibold transition-all', activeTab === 'browse' ? 'bg-zinc-700 text-zinc-100 shadow-sm' : 'text-zinc-500 hover:text-zinc-300')}>Browse</button>
+              <button onClick={() => { setActiveTab('edit'); fetchMogrtParams(); }} className={cn('px-4 py-1.5 rounded-lg text-[12px] font-semibold transition-all', activeTab === 'edit' ? 'bg-zinc-700 text-zinc-100 shadow-sm' : 'text-zinc-500 hover:text-zinc-300')}>Edit</button>
+          </div>
           <button onClick={() => setShowTemplateModal(true)} className="flex items-center gap-1.5 px-3 py-1.5 bg-zinc-800 text-zinc-200 font-semibold rounded-2xl text-[12px] hover:bg-zinc-700 active:scale-[0.97] transition-all border border-zinc-700">
             <Icons.wand size={13} /> Create Template
           </button>
@@ -310,6 +405,51 @@ export default function App() {
                 <span className="text-[10px] text-zinc-600 tabular-nums">{item.count}</span>
               </button>
             ))}
+          </div>
+
+          {/* Divider */}
+          <div className="mx-3 border-t border-zinc-800/40" />
+
+          {/* User Folders */}
+          <div className="p-2.5 flex flex-col gap-0.5">
+            <div className="flex items-center justify-between px-2 mb-1 group">
+                <p className="text-[10px] text-zinc-600 uppercase tracking-widest font-semibold">My Folders</p>
+                <button onClick={() => setEditingCollection('NEW')} className="text-zinc-500 hover:text-zinc-300 transition-colors opacity-0 group-hover:opacity-100">
+                    <Icons.plus size={12} />
+                </button>
+            </div>
+            {editingCollection === 'NEW' && (
+                <div className="flex items-center gap-2 px-2 py-1.5 rounded-xl bg-zinc-800/40">
+                    <Icons.folder size={14} className="text-amber-500/50" />
+                    <input autoFocus type="text" value={newCollectionName} onChange={e => setNewCollectionName(e.target.value)} onKeyDown={e => { if(e.key==='Enter') handleCreateCollection(newCollectionName); else if(e.key==='Escape') setEditingCollection(null); }} onBlur={() => handleCreateCollection(newCollectionName)} className="flex-1 bg-transparent text-[12px] text-zinc-200 outline-none" placeholder="Folder Name..." />
+                </div>
+            )}
+            {collections.map(col => {
+                const isActive = activeView === `collection:${col.name}`;
+                const isEditing = editingCollection === col.name;
+                return (
+                  <div key={col.name} className={cn('group flex items-center justify-between px-2 py-1.5 rounded-xl transition-all', isActive ? 'bg-zinc-800/80 text-zinc-100' : 'text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800/40')}>
+                      {isEditing ? (
+                          <div className="flex items-center gap-2 flex-1">
+                              <Icons.folder size={14} className="text-amber-400" />
+                              <input autoFocus type="text" defaultValue={col.name} onKeyDown={e => { if(e.key==='Enter') handleRenameCollection(col.name, e.target.value); else if(e.key==='Escape') setEditingCollection(null); }} onBlur={e => handleRenameCollection(col.name, e.target.value)} className="flex-1 bg-transparent text-[12px] text-zinc-200 outline-none" />
+                          </div>
+                      ) : (
+                          <>
+                              <button onClick={() => setView(`collection:${col.name}`)} className="flex items-center gap-2 flex-1 text-left">
+                                  <Icons.folder size={14} className={isActive ? 'text-amber-400' : 'text-zinc-500 group-hover:text-amber-400/50'} />
+                                  <span className="flex-1 truncate text-[12px]">{col.name}</span>
+                                  <span className="text-[10px] text-zinc-600 tabular-nums">{col.count}</span>
+                              </button>
+                              <div className="hidden group-hover:flex items-center gap-1 ml-1 shrink-0">
+                                  <button onClick={(e) => { e.stopPropagation(); setEditingCollection(col.name); }} className="text-zinc-500 hover:text-zinc-300 p-0.5"><Icons.wand size={10} /></button>
+                                  <button onClick={(e) => { e.stopPropagation(); handleDeleteCollection(col.name); }} className="text-zinc-500 hover:text-rose-400 p-0.5"><Icons.x size={10} /></button>
+                              </div>
+                          </>
+                      )}
+                  </div>
+                );
+            })}
           </div>
 
           {/* Divider */}
@@ -359,11 +499,109 @@ export default function App() {
         </aside>
 
         {/* ─── CONTENT ──────────────────────────────────────── */}
-        <main className="flex-1 flex flex-col overflow-hidden bg-[#0a0a0b]">
+        <main className="flex-1 flex flex-col overflow-hidden bg-[#0a0a0b] relative">
+          
+          {activeTab === 'edit' && (
+              <div className="absolute inset-0 z-10 bg-[#0a0a0b] flex flex-col animate-fade-in overflow-y-auto">
+                  <div className="flex items-center justify-between px-6 py-4 border-b border-zinc-800/50 sticky top-0 bg-[#0a0a0b]/90 backdrop-blur-md z-20">
+                      <h2 className="text-[16px] font-bold text-zinc-100 flex items-center gap-2">
+                          <Icons.wand size={18} className="text-amber-500" />
+                          Edit Active Clip
+                      </h2>
+                      <button onClick={fetchMogrtParams} className="px-3 py-1.5 bg-zinc-800 hover:bg-zinc-700 text-zinc-300 rounded-xl text-[12px] font-medium transition-all">
+                          Refresh Selected
+                      </button>
+                  </div>
+                  
+                  <div className="p-6 max-w-3xl w-full mx-auto flex flex-col gap-6">
+                      {mogrtError && (
+                          <div className="flex flex-col items-center justify-center py-20 text-center gap-4">
+                              <Icons.film size={48} className="text-zinc-700" />
+                              <p className="text-[14px] text-zinc-400 font-medium">{mogrtError}</p>
+                              <p className="text-[12px] text-zinc-600 max-w-xs">Select a Motion Graphics Template on your Premiere Pro timeline, then click Refresh.</p>
+                          </div>
+                      )}
+
+                      {mogrtParams && mogrtParams.length === 0 && !mogrtError && (
+                          <p className="text-zinc-500 italic">This clip has no editable parameters.</p>
+                      )}
+
+                      {mogrtParams && mogrtParams.length > 0 && (
+                          <div className="flex flex-col gap-5">
+                              {mogrtParams.map((p, i) => (
+                                  <div key={p.index} className="flex flex-col gap-1.5 border-b border-zinc-800/30 pb-4 last:border-0">
+                                      <label className="text-[12px] font-semibold text-zinc-400 uppercase tracking-wider">{p.name}</label>
+                                      
+                                      {p.type === 'text' && (
+                                          <input 
+                                              type="text" 
+                                              value={p.value} 
+                                              onChange={(e) => updateMogrtParam(i, e.target.value)}
+                                              className="bg-[#121214] border border-zinc-800 rounded-xl px-3 py-2 text-[13px] text-zinc-200 focus:outline-none focus:border-amber-500/40 w-full shadow-inner"
+                                          />
+                                      )}
+                                      
+                                      {p.type === 'color' && (
+                                          <div className="flex items-center gap-3">
+                                              <input 
+                                                  type="color" 
+                                                  value={rgbaToHex(p.value)} 
+                                                  onChange={(e) => updateMogrtParam(i, hexToRgba(e.target.value))}
+                                                  className="w-10 h-10 bg-[#121214] border border-zinc-800 rounded-xl cursor-pointer p-0.5 shrink-0"
+                                              />
+                                              <span className="text-[12px] text-zinc-500 font-mono uppercase">{rgbaToHex(p.value)}</span>
+                                          </div>
+                                      )}
+
+                                      {p.type === 'checkbox' && (
+                                          <label className="flex items-center gap-3 cursor-pointer">
+                                              <input 
+                                                  type="checkbox" 
+                                                  checked={p.value === true || p.value === 'true' || p.value === 1}
+                                                  onChange={(e) => updateMogrtParam(i, e.target.checked)}
+                                                  className="accent-amber-500 w-4 h-4 cursor-pointer"
+                                              />
+                                              <span className="text-[13px] text-zinc-300">Enable</span>
+                                          </label>
+                                      )}
+
+                                      {p.type === 'slider' && (
+                                          <div className="flex items-center gap-3">
+                                              <input 
+                                                  type="range" 
+                                                  value={p.value || 0}
+                                                  min={0}
+                                                  max={p.value > 100 ? p.value * 2 : 100}
+                                                  onChange={(e) => updateMogrtParam(i, parseFloat(e.target.value))}
+                                                  className="flex-1 accent-amber-500"
+                                              />
+                                              <input 
+                                                  type="number"
+                                                  value={p.value || 0}
+                                                  onChange={(e) => updateMogrtParam(i, parseFloat(e.target.value))}
+                                                  className="w-20 bg-[#121214] border border-zinc-800 rounded-lg px-2 py-1.5 text-[12px] text-zinc-200 focus:outline-none focus:border-amber-500/40 tabular-nums"
+                                              />
+                                          </div>
+                                      )}
+                                      
+                                      {p.type === 'unknown' && (
+                                          <span className="text-[11px] text-zinc-600 bg-zinc-900 px-2 py-1 rounded-md inline-block w-fit">
+                                              Unsupported parameter type. Edit in Premiere Pro Properties panel.
+                                          </span>
+                                      )}
+                                  </div>
+                              ))}
+                          </div>
+                      )}
+                  </div>
+              </div>
+          )}
+
           {/* Toolbar */}
           <div className="flex items-center justify-between px-4 py-2 border-b border-zinc-800/30 shrink-0">
             <span className="text-[12px] text-zinc-500">
               <span className="text-zinc-300 font-semibold">{assets.length}</span> assets
+              {activeView.startsWith('collection:') && <span className="text-zinc-600"> in folder <span className="text-amber-500/70 capitalize">{activeView.replace('collection:', '')}</span></span>}
               {typeFilter && <span className="text-zinc-600"> in <span className="text-amber-500/70 capitalize">{typeFilter}</span></span>}
               {catFilter && <span className="text-zinc-600"> / <span className="text-amber-500/70 capitalize">{catFilter}</span></span>}
             </span>
@@ -521,21 +759,14 @@ export default function App() {
             {/* Divider */}
             <div className="mx-3 border-t border-zinc-800/30" />
 
-            {/* Edit parameters */}
-            <div className="p-3 flex flex-col gap-3">
-              <p className="text-[10px] text-zinc-600 uppercase tracking-widest font-semibold">Parameters</p>
-              <div className="flex flex-col gap-2">
-                <label className="text-[11px] text-zinc-500">Primary Text</label>
-                <input type="text" defaultValue={selected.name} className="bg-zinc-900 border border-zinc-800 rounded-xl px-2.5 py-1.5 text-[12px] text-zinc-200 focus:outline-none focus:border-amber-500/40 transition-colors" />
-              </div>
-              <div className="flex flex-col gap-2">
-                <label className="text-[11px] text-zinc-500">Scale</label>
-                <input type="range" min="50" max="200" defaultValue="100" />
-              </div>
-              <div className="flex flex-col gap-2">
-                <label className="text-[11px] text-zinc-500">Color</label>
-                <input type="color" defaultValue="#f59e0b" className="w-full h-8 bg-zinc-900 border border-zinc-800 rounded-xl cursor-pointer p-0.5" />
-              </div>
+            {/* Quick Edit Hint */}
+            <div className="p-4 flex flex-col gap-2 bg-amber-500/5 m-3 rounded-xl border border-amber-500/10">
+                <p className="text-[11px] text-amber-500/80 font-semibold flex items-center gap-1.5 uppercase tracking-wide">
+                    <Icons.wand size={12} /> Live Edit
+                </p>
+                <p className="text-[11px] text-zinc-400">
+                    After inserting this template, switch to the <strong>Edit</strong> tab at the top of the plugin to customize its colors, text, and settings natively.
+                </p>
             </div>
 
             {/* Tags */}

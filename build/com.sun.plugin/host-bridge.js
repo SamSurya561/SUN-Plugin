@@ -138,11 +138,58 @@
             return list || [];
         },
 
+        async createCollection(name) {
+            try {
+                plugin.createCollection(name, "");
+                plugin.save();
+                return { ok: true };
+            } catch(e) { return { ok: false, error: e.message }; }
+        },
+
+        async renameCollection(oldName, newName) {
+            try {
+                var res = plugin.renameCollection(oldName, newName);
+                if(res) plugin.save();
+                return { ok: res };
+            } catch(e) { return { ok: false, error: e.message }; }
+        },
+
+        async deleteCollection(name) {
+            try {
+                var res = plugin.deleteCollection(name);
+                if(res) plugin.save();
+                return { ok: res };
+            } catch(e) { return { ok: false, error: e.message }; }
+        },
+
+        async addToCollection(id, name) {
+            try {
+                var res = plugin.addToCollection(id, name);
+                if(res) plugin.save();
+                return { ok: res };
+            } catch(e) { return { ok: false, error: e.message }; }
+        },
+
         /**
          * Return the current plugin settings.
          */
         async settings() {
             return plugin.settings;
+        },
+
+        /**
+         * Get editable parameters of the selected MOGRT in the timeline.
+         */
+        async getMogrtParams() {
+            return callJSX('sunGetSelectedMogrtParams()');
+        },
+
+        /**
+         * Update a parameter of the selected MOGRT in the timeline.
+         */
+        async updateMogrtParam(paramIndex, value) {
+            // value could be string, number, boolean, or array (for colors)
+            return callJSX('sunUpdateMogrtParam(' + paramIndex + ', ' + JSON.stringify(value) + ')');
         },
 
         /**
@@ -212,7 +259,12 @@
                     for (var i = 0; i < result.data.length; i++) {
                         // plugin.importFile will copy to library and index it
                         var fileRes = plugin.importFile(result.data[i]);
-                        if (fileRes && fileRes.ok) importedCount++;
+                        if (fileRes && fileRes.ok) {
+                            importedCount++;
+                            if (opts.collection && fileRes.asset) {
+                                plugin.addToCollection(fileRes.asset.id, opts.collection);
+                            }
+                        }
                     }
                     
                     if (importedCount > 0) {
