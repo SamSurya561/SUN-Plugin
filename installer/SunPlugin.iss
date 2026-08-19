@@ -6,7 +6,7 @@
 ; Sets:        HKCU\Software\Adobe\CSXS.* PlayerDebugMode=1 (for unsigned ext)
 
 #define MyAppName "SUN Plugin"
-#define MyAppVersion "0.4.0"
+#define MyAppVersion "0.5.0"
 #define MyAppPublisher "SUN Plugin"
 #define MyAppURL "https://sunplugin.com"
 #define ExtensionId "com.sun.plugin"

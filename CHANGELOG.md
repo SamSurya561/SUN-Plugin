@@ -2,6 +2,15 @@
 
 All notable changes to the SUN Plugin will be documented in this file.
 
+## [0.5.0] - 2026-08-20
+
+### Added
+- **Native MOGRT Parameter Editing**: Built a robust ExtendScript bridge enabling Live Sync editing of active MOGRT templates natively inside the plugin's new Edit tab (Sliders, Checkboxes, Colors, Text).
+- **Custom User Folders (Collections)**: Added complete organizational control allowing users to create, rename, and delete custom folders in the sidebar.
+- **Contextual Folder Imports**: Importing assets while viewing a custom folder now automatically adds those assets to the active folder.
+- **Cleaned Up MOGRT Library**: Generated clean thumbnail previews and removed 3rd-party watermarks/branding from the provided asset corpus.
+- **Improved Installer**: Windows uninstaller now correctly pulls the high-res SUN Plugin icon in the Settings app.
+
 ## [0.4.0] - 2026-08-20
 
 ### Added

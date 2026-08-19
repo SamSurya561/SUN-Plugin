@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ExtensionManifest Version="12.0"
                    ExtensionBundleId="com.sun.plugin"
-                   ExtensionBundleVersion="0.4.0"
+                   ExtensionBundleVersion="0.5.0"
                    ExtensionBundleName="SUN Plugin">
 
   <ExtensionList>
