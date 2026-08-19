@@ -621,23 +621,40 @@ export default function App() {
                 <Icons.x size={16} />
               </button>
             </div>
-            <div className="p-5 flex flex-col gap-4 text-[13px] text-zinc-300">
-              <p>Adobe Premiere Pro scripts cannot automatically export presets or timeline elements. To create a template:</p>
+            <div className="p-5 flex flex-col gap-4 text-[13px] text-zinc-300 overflow-y-auto max-h-[70vh]">
+              <p>Adobe Premiere Pro scripts cannot automatically export timeline elements. To create a template, export it natively first:</p>
               
-              <div className="flex flex-col gap-2 bg-zinc-900/50 p-3 rounded-xl border border-zinc-800/50">
-                <div className="flex gap-3">
-                  <span className="w-5 h-5 rounded-full bg-zinc-800 flex items-center justify-center text-[10px] font-bold shrink-0">1</span>
-                  <p>In Premiere Pro, manually export your graphic as a <strong>.mogrt</strong> or your effects as a <strong>.prfpset</strong> (preset).</p>
+              <div className="flex flex-col gap-3 bg-zinc-900/50 p-4 rounded-xl border border-zinc-800/50">
+                
+                <div>
+                  <h4 className="text-amber-500 font-bold text-[12px] uppercase tracking-wider mb-1">To Export an Effect Preset (.prfpset)</h4>
+                  <ol className="list-decimal list-outside ml-4 space-y-1 text-zinc-400">
+                    <li>In the <strong>Effect Controls</strong> panel, select the effect(s) you want to save.</li>
+                    <li>Right-click and choose <strong>Save Preset...</strong></li>
+                    <li>Go to your <strong>Effects</strong> panel, find your new preset under <i>Presets</i>.</li>
+                    <li>Right-click it and choose <strong>Export Presets...</strong> to save the file.</li>
+                  </ol>
                 </div>
-                <div className="flex gap-3 mt-1">
-                  <span className="w-5 h-5 rounded-full bg-amber-500/20 text-amber-500 flex items-center justify-center text-[10px] font-bold shrink-0">2</span>
-                  <p>Click the <strong>Browse</strong> button below to instantly ingest the exported file into your SUN library.</p>
+
+                <div className="border-t border-zinc-800/50 pt-3">
+                  <h4 className="text-amber-500 font-bold text-[12px] uppercase tracking-wider mb-1">To Export a Graphic/Text (.mogrt)</h4>
+                  <ol className="list-decimal list-outside ml-4 space-y-1 text-zinc-400">
+                    <li>Select your graphic or text clip in the timeline.</li>
+                    <li>In the top menu, go to <strong>Graphics and Titles</strong> &gt; <strong>Export As Motion Graphics Template...</strong></li>
+                    <li>Save the file to your computer.</li>
+                  </ol>
                 </div>
+
+              </div>
+
+              <div className="flex items-center gap-3 bg-amber-500/10 p-3 rounded-xl border border-amber-500/20">
+                <Icons.download size={20} className="text-amber-500 shrink-0" />
+                <p className="text-zinc-300 text-[12px]">Finally, click <strong>Browse & Ingest File</strong> below to select the file you just exported. It will instantly be added to your SUN library!</p>
               </div>
 
               <div className="flex justify-end gap-2 mt-2">
-                <button onClick={() => setShowTemplateModal(false)} className="px-4 py-2 bg-zinc-800 hover:bg-zinc-700 text-zinc-300 rounded-xl transition-all">Cancel</button>
-                <button onClick={handleTemplateImport} className="px-4 py-2 bg-gradient-to-r from-amber-500 to-orange-600 text-black font-semibold rounded-xl hover:brightness-110 active:scale-[0.97] transition-all flex items-center gap-1.5">
+                <button onClick={() => setShowTemplateModal(false)} className="px-4 py-2 bg-zinc-800 hover:bg-zinc-700 text-zinc-300 rounded-xl transition-all font-medium">Cancel</button>
+                <button onClick={handleTemplateImport} className="px-4 py-2 bg-gradient-to-r from-amber-500 to-orange-600 text-black font-semibold rounded-xl hover:brightness-110 active:scale-[0.97] shadow-lg shadow-amber-500/20 transition-all flex items-center gap-2">
                   <Icons.download size={14} /> Browse & Ingest File
                 </button>
               </div>
