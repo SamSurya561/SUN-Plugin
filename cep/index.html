@@ -1,0 +1,192 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Sun Plugin</title>
+<link rel="stylesheet" href="panel.css">
+</head>
+<body>
+
+<!-- The SUN mark, defined once and instanced wherever it appears. -->
+<svg width="0" height="0" class="sprite" aria-hidden="true">
+  <defs>
+    <linearGradient id="sunCore" x1="0.22" y1="0.06" x2="0.82" y2="0.98">
+      <stop offset="0" stop-color="#FFE07A"/><stop offset="0.42" stop-color="#FFB328"/><stop offset="1" stop-color="#F0641C"/>
+    </linearGradient>
+    <linearGradient id="sunRay" x1="0.5" y1="1" x2="0.5" y2="0">
+      <stop offset="0" stop-color="#FFB733"/><stop offset="1" stop-color="#FF8A1E"/>
+    </linearGradient>
+    <path id="rayL" d="M -2.5 -18.6 L -1.05 -28.4 Q 0 -29.9 1.05 -28.4 L 2.5 -18.6 Z"/>
+    <path id="rayS" d="M -1.9 -18.6 L -0.85 -24.6 Q 0 -25.8 0.85 -24.6 L 1.9 -18.6 Z"/>
+    <symbol id="sunMark" viewBox="0 0 64 64">
+      <g transform="translate(32 32)">
+        <g fill="url(#sunRay)">
+          <use href="#rayL"/><use href="#rayL" transform="rotate(60)"/><use href="#rayL" transform="rotate(120)"/>
+          <use href="#rayL" transform="rotate(180)"/><use href="#rayL" transform="rotate(240)"/><use href="#rayL" transform="rotate(300)"/>
+          <g opacity=".92">
+            <use href="#rayS" transform="rotate(30)"/><use href="#rayS" transform="rotate(90)"/><use href="#rayS" transform="rotate(150)"/>
+            <use href="#rayS" transform="rotate(210)"/><use href="#rayS" transform="rotate(270)"/><use href="#rayS" transform="rotate(330)"/>
+          </g>
+        </g>
+        <circle r="15" fill="url(#sunCore)"/>
+        <path d="M -10.4 -6.2 A 12.1 12.1 0 0 1 6.2 -10.4 A 15 15 0 0 0 -10.4 -6.2 Z" fill="#FFF3C4" opacity=".5"/>
+      </g>
+    </symbol>
+  </defs>
+</svg>
+
+<header class="topbar">
+  <div class="brand">
+    <svg class="brand-mark" width="22" height="22"><use href="#sunMark"/></svg>
+    <span class="brand-name"><b>SUN</b><span>Plugin</span></span>
+  </div>
+
+  <div class="search">
+    <input id="search" type="search" placeholder="Search assets, tags, categories..." autocomplete="off" spellcheck="false">
+    <button id="search-clear" class="icon-btn" title="Clear" hidden>&times;</button>
+  </div>
+
+  <div class="topbar-actions">
+    <button id="btn-import" class="btn">Import</button>
+    <button id="btn-settings" class="icon-btn" title="Settings">&#9881;</button>
+  </div>
+</header>
+
+<div class="layout">
+  <!-- ------------------------------------------------------------ sidebar -->
+  <aside class="sidebar" id="sidebar">
+    <nav class="quick">
+      <button class="quick-item is-active" data-view="all">
+        <span>All assets</span><span class="count" id="count-all">0</span>
+      </button>
+      <button class="quick-item" data-view="favorites">
+        <span>Favourites</span><span class="count" id="count-fav">0</span>
+      </button>
+      <button class="quick-item" data-view="recent">
+        <span>Recent</span><span class="count" id="count-recent">0</span>
+      </button>
+      <button class="quick-item" data-view="mine">
+        <span>My library</span><span class="count" id="count-mine">0</span>
+      </button>
+      <button class="quick-item" data-view="development">
+        <span>Development <em class="badge badge-dev">DEV</em></span><span class="count" id="count-dev">0</span>
+      </button>
+    </nav>
+
+    <section class="facet">
+      <h3>Type</h3>
+      <div id="facet-type" class="facet-list"></div>
+    </section>
+
+    <section class="facet">
+      <h3>Category</h3>
+      <div id="facet-category" class="facet-list"></div>
+    </section>
+
+    <section class="facet">
+      <h3>Collections</h3>
+      <div id="facet-collections" class="facet-list"></div>
+    </section>
+
+    <section class="facet">
+      <h3>Tags</h3>
+      <div id="facet-tags" class="tag-cloud"></div>
+    </section>
+
+    <!-- Present only when Development Asset Mode is ON and the module exists. -->
+    <section class="facet dev-tools" id="dev-tools" hidden>
+      <h3>Development Asset Tools</h3>
+      <div class="dev-note">Temporary subsystem. Removable without affecting the library.</div>
+      <div class="dev-buttons">
+        <button class="btn btn-sm" data-cmd="research">Research Sources</button>
+        <button class="btn btn-sm" data-cmd="scan-sources">Scan Sources</button>
+        <button class="btn btn-sm" data-cmd="discover">Discover Assets</button>
+        <button class="btn btn-sm" data-cmd="download">Download Selected</button>
+        <button class="btn btn-sm" data-cmd="import-downloaded">Import Downloaded</button>
+        <button class="btn btn-sm" data-cmd="scan-local">Scan Local Library</button>
+        <button class="btn btn-sm" data-cmd="rebuild">Rebuild Index</button>
+      </div>
+    </section>
+  </aside>
+
+  <!-- --------------------------------------------------------------- grid -->
+  <main class="content">
+    <div class="toolbar">
+      <div class="result-count" id="result-count">0 assets</div>
+      <div class="toolbar-right">
+        <label class="select">
+          Sort
+          <select id="sort">
+            <option value="name">Name</option>
+            <option value="added">Date added</option>
+            <option value="type">Type</option>
+            <option value="size">Size</option>
+            <option value="duration">Duration</option>
+            <option value="used">Most used</option>
+            <option value="rating">Rating</option>
+          </select>
+        </label>
+        <div class="seg" id="grid-size">
+          <button data-size="small" title="Small">&#9642;</button>
+          <button data-size="medium" class="is-active" title="Medium">&#9643;</button>
+          <button data-size="large" title="Large">&#9644;</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="active-filters" id="active-filters" hidden></div>
+
+    <!-- Virtualised: only the visible window of rows is in the DOM. -->
+    <div class="grid-viewport" id="viewport">
+      <div class="grid-sizer" id="sizer">
+        <div class="grid" id="grid"></div>
+      </div>
+      <div class="empty" id="empty" hidden>
+        <svg width="44" height="44" style="opacity:.35"><use href="#sunMark"/></svg>
+        <p id="empty-text">No assets yet.</p>
+        <p class="empty-hint">Import your own assets, or turn on Development Asset Mode to generate a test library.</p>
+      </div>
+    </div>
+  </main>
+
+  <!-- ------------------------------------------------------------- detail -->
+  <aside class="detail" id="detail" hidden>
+    <button class="detail-close icon-btn" id="detail-close" title="Close">&times;</button>
+    <div class="detail-preview" id="detail-preview"></div>
+    <h2 id="detail-name">-</h2>
+    <div class="detail-badges" id="detail-badges"></div>
+
+    <div class="detail-actions">
+      <button class="btn btn-primary" id="act-insert">Insert at playhead</button>
+      <button class="btn" id="act-favorite">Favourite</button>
+      <button class="btn" id="act-replace">Replace file</button>
+    </div>
+
+    <dl class="detail-meta" id="detail-meta"></dl>
+
+    <div class="detail-section">
+      <h3>Tags</h3>
+      <div class="tag-cloud" id="detail-tags"></div>
+    </div>
+  </aside>
+</div>
+
+<div class="statusbar" id="statusbar">
+  <span id="status-text">Ready</span>
+  <span class="status-right" id="status-lib"></span>
+</div>
+
+<!--
+  Script loading order matters:
+  1. CSInterface.js — defines the CSInterface class (Adobe CEP bridge)
+  2. host-bridge.js — uses CSInterface + Node.js require to set window.sunHost
+  3. panel.js       — finds window.sunHost and drives the UI
+
+  In a plain browser (no CEP), the host bridge silently exits and panel.js
+  falls back to its built-in preview mode using index-preview.json.
+-->
+<script src="CSInterface.js"></script>
+<script src="host-bridge.js"></script>
+<script src="panel.js"></script>
+</body>
+</html>

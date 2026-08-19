@@ -1,0 +1,620 @@
+{
+  "$comment": "Core taxonomy. Permanent — this file survives removal of the development ingestor. Folder names under the library root map to types; keywords drive filename-based inference when the folder is ambiguous.",
+  "version": 1,
+  "types": {
+    "mogrt": {
+      "label": "Motion Graphics",
+      "folder": "MOGRT",
+      "kinds": [
+        "mogrt"
+      ],
+      "categories": [
+        "titles",
+        "lower-thirds",
+        "captions",
+        "kinetic-typography",
+        "text-animations",
+        "transitions",
+        "logo-reveals",
+        "infographics",
+        "social",
+        "callouts"
+      ],
+      "keywords": [
+        "mogrt",
+        "template",
+        "title",
+        "lower third",
+        "callout",
+        "reveal"
+      ],
+      "premiere": "essentialGraphics"
+    },
+    "sfx": {
+      "label": "Sound Effects",
+      "folder": "SFX",
+      "kinds": [
+        "audio"
+      ],
+      "categories": [
+        "whoosh",
+        "impact",
+        "riser",
+        "downer",
+        "ui",
+        "ambience",
+        "foley",
+        "glitch",
+        "cinematic",
+        "transition"
+      ],
+      "keywords": [
+        "sfx",
+        "sound",
+        "whoosh",
+        "swoosh",
+        "impact",
+        "hit",
+        "boom",
+        "riser",
+        "downer",
+        "click",
+        "beep",
+        "ui"
+      ],
+      "premiere": "audioTrack"
+    },
+    "music": {
+      "label": "Music",
+      "folder": "Music",
+      "kinds": [
+        "audio"
+      ],
+      "categories": [
+        "cinematic",
+        "ambient",
+        "upbeat",
+        "corporate",
+        "lofi",
+        "tension",
+        "percussion"
+      ],
+      "keywords": [
+        "music",
+        "track",
+        "score",
+        "theme",
+        "loop",
+        "bgm"
+      ],
+      "premiere": "audioTrack"
+    },
+    "transition": {
+      "label": "Transitions",
+      "folder": "Transitions",
+      "kinds": [
+        "mogrt",
+        "video",
+        "preset",
+        "image"
+      ],
+      "categories": [
+        "whip",
+        "zoom",
+        "glitch",
+        "light",
+        "film",
+        "shape",
+        "distortion",
+        "dissolve",
+        "wipe"
+      ],
+      "keywords": [
+        "transition",
+        "whip",
+        "swipe",
+        "zoom in",
+        "zoom out",
+        "glitch",
+        "wipe",
+        "dissolve"
+      ],
+      "premiere": "videoTrack"
+    },
+    "lut": {
+      "label": "LUTs",
+      "folder": "LUTs",
+      "kinds": [
+        "lut"
+      ],
+      "categories": [
+        "cinematic",
+        "film-emulation",
+        "teal-orange",
+        "bleach",
+        "vintage",
+        "warm",
+        "cool",
+        "monochrome",
+        "technical",
+        "utility"
+      ],
+      "keywords": [
+        "lut",
+        "cube",
+        "grade",
+        "look",
+        "film",
+        "kodak",
+        "fuji",
+        "rec709",
+        "log"
+      ],
+      "premiere": "lumetri"
+    },
+    "colorpreset": {
+      "label": "Color Presets",
+      "folder": "Presets/Color",
+      "kinds": [
+        "colorpreset",
+        "preset"
+      ],
+      "categories": [
+        "lumetri",
+        "creative",
+        "curves",
+        "wheels"
+      ],
+      "keywords": [
+        "color preset",
+        "lumetri",
+        "grade preset"
+      ],
+      "premiere": "lumetri"
+    },
+    "preset": {
+      "label": "Presets",
+      "folder": "Presets",
+      "kinds": [
+        "preset"
+      ],
+      "categories": [
+        "motion",
+        "effect",
+        "audio",
+        "text",
+        "speed",
+        "export",
+        "stabilize"
+      ],
+      "keywords": [
+        "preset",
+        "prfpset",
+        "effect preset"
+      ],
+      "premiere": "effectPreset"
+    },
+    "caption": {
+      "label": "Captions",
+      "folder": "Captions",
+      "kinds": [
+        "caption",
+        "mogrt"
+      ],
+      "categories": [
+        "subtitle",
+        "auto-caption",
+        "styled",
+        "karaoke",
+        "burn-in"
+      ],
+      "keywords": [
+        "caption",
+        "subtitle",
+        "srt",
+        "vtt",
+        "karaoke"
+      ],
+      "premiere": "captions"
+    },
+    "overlay": {
+      "label": "Overlays",
+      "folder": "Overlays",
+      "kinds": [
+        "video",
+        "image"
+      ],
+      "categories": [
+        "film-burn",
+        "light-leak",
+        "film-grain",
+        "dust",
+        "scratches",
+        "bokeh",
+        "lens-flare",
+        "particles",
+        "vhs",
+        "smoke"
+      ],
+      "keywords": [
+        "overlay",
+        "burn",
+        "leak",
+        "grain",
+        "dust",
+        "scratch",
+        "bokeh",
+        "flare",
+        "particle",
+        "vhs"
+      ],
+      "premiere": "videoTrack"
+    },
+    "background": {
+      "label": "Backgrounds",
+      "folder": "Effects/Backgrounds",
+      "kinds": [
+        "video",
+        "image"
+      ],
+      "categories": [
+        "gradient",
+        "abstract",
+        "texture",
+        "loop",
+        "solid",
+        "noise"
+      ],
+      "keywords": [
+        "background",
+        "backdrop",
+        "gradient",
+        "texture",
+        "loop"
+      ],
+      "premiere": "videoTrack"
+    },
+    "effect": {
+      "label": "Effects",
+      "folder": "Effects",
+      "kinds": [
+        "video",
+        "image",
+        "preset"
+      ],
+      "categories": [
+        "distortion",
+        "glitch",
+        "blur",
+        "stylize",
+        "keying",
+        "generate"
+      ],
+      "keywords": [
+        "effect",
+        "fx",
+        "glitch",
+        "distort",
+        "blur"
+      ],
+      "premiere": "videoTrack"
+    },
+    "guide": {
+      "label": "Guides",
+      "folder": "Guides",
+      "kinds": [
+        "image"
+      ],
+      "categories": [
+        "safe-area",
+        "composition",
+        "aspect-ratio",
+        "social-crop",
+        "focus-chart"
+      ],
+      "keywords": [
+        "guide",
+        "safe area",
+        "title safe",
+        "thirds",
+        "grid",
+        "crop",
+        "aspect"
+      ],
+      "premiere": "overlayTrack"
+    },
+    "template": {
+      "label": "Templates",
+      "folder": "Templates",
+      "kinds": [
+        "project",
+        "mogrt",
+        "archive"
+      ],
+      "categories": [
+        "sequence",
+        "project",
+        "pack",
+        "bundle"
+      ],
+      "keywords": [
+        "template",
+        "project",
+        "pack",
+        "bundle",
+        "starter"
+      ],
+      "premiere": "project"
+    },
+    "video": {
+      "label": "Video",
+      "folder": "Effects/Video",
+      "kinds": [
+        "video"
+      ],
+      "categories": [
+        "stock",
+        "loop",
+        "element",
+        "matte"
+      ],
+      "keywords": [
+        "footage",
+        "clip",
+        "stock",
+        "matte"
+      ],
+      "premiere": "videoTrack"
+    },
+    "image": {
+      "label": "Images",
+      "folder": "Effects/Images",
+      "kinds": [
+        "image"
+      ],
+      "categories": [
+        "still",
+        "texture",
+        "element",
+        "logo"
+      ],
+      "keywords": [
+        "image",
+        "photo",
+        "still",
+        "png"
+      ],
+      "premiere": "videoTrack"
+    }
+  },
+  "subcategoryHints": {
+    "cinematic": [
+      "cinematic",
+      "cinema",
+      "filmic",
+      "epic",
+      "movie",
+      "trailer"
+    ],
+    "whoosh": [
+      "whoosh",
+      "swoosh",
+      "swish",
+      "woosh",
+      "air",
+      "pass by"
+    ],
+    "impact": [
+      "impact",
+      "hit",
+      "boom",
+      "slam",
+      "punch",
+      "braam",
+      "thud"
+    ],
+    "riser": [
+      "riser",
+      "rise",
+      "uplifter",
+      "build",
+      "swell",
+      "ramp up"
+    ],
+    "downer": [
+      "downer",
+      "downlifter",
+      "fall",
+      "drop",
+      "ramp down"
+    ],
+    "ui": [
+      "ui",
+      "click",
+      "tap",
+      "beep",
+      "notification",
+      "toggle",
+      "hover"
+    ],
+    "ambience": [
+      "ambience",
+      "ambient",
+      "atmos",
+      "room tone",
+      "drone",
+      "background"
+    ],
+    "film-burn": [
+      "film burn",
+      "burn",
+      "filmburn",
+      "light burn"
+    ],
+    "light-leak": [
+      "light leak",
+      "leak",
+      "lightleak",
+      "flare leak"
+    ],
+    "film-grain": [
+      "grain",
+      "film grain",
+      "16mm",
+      "35mm",
+      "8mm"
+    ],
+    "glitch": [
+      "glitch",
+      "datamosh",
+      "corrupt",
+      "rgb split",
+      "digital"
+    ],
+    "vintage": [
+      "vintage",
+      "retro",
+      "old",
+      "classic",
+      "70s",
+      "80s"
+    ],
+    "teal-orange": [
+      "teal orange",
+      "teal-orange",
+      "blockbuster",
+      "orange teal"
+    ],
+    "lower-thirds": [
+      "lower third",
+      "lowerthird",
+      "l3",
+      "name tag",
+      "nametag"
+    ],
+    "titles": [
+      "title",
+      "headline",
+      "intro",
+      "opener"
+    ],
+    "social": [
+      "social",
+      "instagram",
+      "tiktok",
+      "youtube",
+      "reel",
+      "short",
+      "story"
+    ],
+    "safe-area": [
+      "safe",
+      "title safe",
+      "action safe",
+      "safe area"
+    ],
+    "composition": [
+      "thirds",
+      "golden",
+      "grid",
+      "composition",
+      "crosshair"
+    ]
+  },
+  "tagSynonyms": {
+    "whoosh": [
+      "swoosh",
+      "transition",
+      "air",
+      "movement"
+    ],
+    "impact": [
+      "hit",
+      "boom",
+      "heavy",
+      "percussion"
+    ],
+    "riser": [
+      "build",
+      "tension",
+      "uplifter"
+    ],
+    "title": [
+      "text",
+      "typography",
+      "headline"
+    ],
+    "lower-third": [
+      "name",
+      "text",
+      "identification"
+    ],
+    "cinematic": [
+      "film",
+      "movie",
+      "dramatic"
+    ],
+    "glitch": [
+      "digital",
+      "distortion",
+      "error"
+    ],
+    "grain": [
+      "texture",
+      "film",
+      "analog"
+    ],
+    "leak": [
+      "light",
+      "analog",
+      "warm"
+    ],
+    "lut": [
+      "color",
+      "grade",
+      "look"
+    ],
+    "caption": [
+      "subtitle",
+      "text",
+      "accessibility"
+    ],
+    "loop": [
+      "seamless",
+      "repeating"
+    ]
+  },
+  "stopwords": [
+    "the",
+    "a",
+    "an",
+    "and",
+    "or",
+    "of",
+    "for",
+    "with",
+    "to",
+    "in",
+    "on",
+    "by",
+    "final",
+    "new",
+    "copy",
+    "untitled",
+    "version",
+    "ver",
+    "v",
+    "free",
+    "download",
+    "hd",
+    "fullhd",
+    "4k",
+    "1080p",
+    "720p",
+    "2160p",
+    "fps",
+    "mp4",
+    "mov",
+    "wav"
+  ]
+}

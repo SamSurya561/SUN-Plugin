@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" role="img" aria-label="Sun Plugin">
+  <title>Sun Plugin</title>
+  <!-- Single-colour variant for panel tabs and toolbar slots, where the host
+       tints the icon itself. currentColor inherits the host theme colour. -->
+  <g transform="translate(32 32)" fill="currentColor">
+    <g id="mRayLong">
+      <path d="M -2.5 -18.6 L -1.05 -28.4 Q 0 -29.9 1.05 -28.4 L 2.5 -18.6 Z"/>
+    </g>
+    <use href="#mRayLong" transform="rotate(60)"/>
+    <use href="#mRayLong" transform="rotate(120)"/>
+    <use href="#mRayLong" transform="rotate(180)"/>
+    <use href="#mRayLong" transform="rotate(240)"/>
+    <use href="#mRayLong" transform="rotate(300)"/>
+    <g id="mRayShort" transform="rotate(30)">
+      <path d="M -1.9 -18.6 L -0.85 -24.6 Q 0 -25.8 0.85 -24.6 L 1.9 -18.6 Z"/>
+    </g>
+    <use href="#mRayShort" transform="rotate(60)"/>
+    <use href="#mRayShort" transform="rotate(120)"/>
+    <use href="#mRayShort" transform="rotate(180)"/>
+    <use href="#mRayShort" transform="rotate(240)"/>
+    <use href="#mRayShort" transform="rotate(300)"/>
+    <circle r="15"/>
+  </g>
+</svg>

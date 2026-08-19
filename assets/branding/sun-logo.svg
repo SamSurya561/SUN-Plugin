@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 64" width="240" height="64" role="img" aria-label="Sun Plugin">
+  <title>Sun Plugin</title>
+  <defs>
+    <linearGradient id="lgCore" x1="0.22" y1="0.06" x2="0.82" y2="0.98">
+      <stop offset="0" stop-color="#FFE07A"/>
+      <stop offset="0.42" stop-color="#FFB328"/>
+      <stop offset="1" stop-color="#F0641C"/>
+    </linearGradient>
+    <linearGradient id="lgRay" x1="0.5" y1="1" x2="0.5" y2="0">
+      <stop offset="0" stop-color="#FFB733"/>
+      <stop offset="1" stop-color="#FF8A1E"/>
+    </linearGradient>
+  </defs>
+
+  <g transform="translate(32 32) scale(0.86)">
+    <g fill="url(#lgRay)">
+      <g id="lgRayLong">
+        <path d="M -2.5 -18.6 L -1.05 -28.4 Q 0 -29.9 1.05 -28.4 L 2.5 -18.6 Z"/>
+      </g>
+      <use href="#lgRayLong" transform="rotate(60)"/>
+      <use href="#lgRayLong" transform="rotate(120)"/>
+      <use href="#lgRayLong" transform="rotate(180)"/>
+      <use href="#lgRayLong" transform="rotate(240)"/>
+      <use href="#lgRayLong" transform="rotate(300)"/>
+      <g id="lgRayShort" transform="rotate(30)" opacity="0.92">
+        <path d="M -1.9 -18.6 L -0.85 -24.6 Q 0 -25.8 0.85 -24.6 L 1.9 -18.6 Z"/>
+      </g>
+      <use href="#lgRayShort" transform="rotate(60)"/>
+      <use href="#lgRayShort" transform="rotate(120)"/>
+      <use href="#lgRayShort" transform="rotate(180)"/>
+      <use href="#lgRayShort" transform="rotate(240)"/>
+      <use href="#lgRayShort" transform="rotate(300)"/>
+    </g>
+    <circle r="15" fill="url(#lgCore)"/>
+    <path d="M -10.4 -6.2 A 12.1 12.1 0 0 1 6.2 -10.4 A 15 15 0 0 0 -10.4 -6.2 Z"
+          fill="#FFF3C4" opacity="0.55"/>
+  </g>
+
+  <!-- Wordmark. currentColor so the lockup inverts cleanly on dark panels. -->
+  <g fill="currentColor" color="#F2F3F5"
+     font-family="Inter, 'Segoe UI', system-ui, -apple-system, sans-serif">
+    <text x="70" y="40" font-size="26" font-weight="700" letter-spacing="1.4">SUN</text>
+    <text x="139" y="40" font-size="26" font-weight="300" letter-spacing="0.6" opacity="0.72">Plugin</text>
+  </g>
+</svg>

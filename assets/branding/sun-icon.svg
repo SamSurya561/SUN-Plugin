@@ -1,0 +1,51 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" role="img" aria-label="Sun Plugin">
+  <title>Sun Plugin</title>
+  <defs>
+    <!-- Core: light falls from the upper left, so the gradient runs down-right. -->
+    <linearGradient id="sunCore" x1="0.22" y1="0.06" x2="0.82" y2="0.98">
+      <stop offset="0" stop-color="#FFE07A"/>
+      <stop offset="0.42" stop-color="#FFB328"/>
+      <stop offset="1" stop-color="#F0641C"/>
+    </linearGradient>
+    <!-- Rays fade slightly at the tips so the mark reads as light, not as a gear. -->
+    <linearGradient id="sunRay" x1="0.5" y1="1" x2="0.5" y2="0">
+      <stop offset="0" stop-color="#FFB733"/>
+      <stop offset="1" stop-color="#FF8A1E"/>
+    </linearGradient>
+    <radialGradient id="sunGlow" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0.55" stop-color="#FFA524" stop-opacity="0.30"/>
+      <stop offset="1" stop-color="#FFA524" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <g transform="translate(32 32)">
+    <circle r="31" fill="url(#sunGlow)"/>
+
+    <!-- One long ray and one short ray, instanced by rotation. Twelve total:
+         alternating lengths keep the silhouette legible down to 16px. -->
+    <g fill="url(#sunRay)">
+      <g id="rayLong">
+        <path d="M -2.5 -18.6 L -1.05 -28.4 Q 0 -29.9 1.05 -28.4 L 2.5 -18.6 Z"/>
+      </g>
+      <use href="#rayLong" transform="rotate(60)"/>
+      <use href="#rayLong" transform="rotate(120)"/>
+      <use href="#rayLong" transform="rotate(180)"/>
+      <use href="#rayLong" transform="rotate(240)"/>
+      <use href="#rayLong" transform="rotate(300)"/>
+
+      <g id="rayShort" transform="rotate(30)" opacity="0.92">
+        <path d="M -1.9 -18.6 L -0.85 -24.6 Q 0 -25.8 0.85 -24.6 L 1.9 -18.6 Z"/>
+      </g>
+      <use href="#rayShort" transform="rotate(60)"/>
+      <use href="#rayShort" transform="rotate(120)"/>
+      <use href="#rayShort" transform="rotate(180)"/>
+      <use href="#rayShort" transform="rotate(240)"/>
+      <use href="#rayShort" transform="rotate(300)"/>
+    </g>
+
+    <circle r="15" fill="url(#sunCore)"/>
+    <!-- Specular crescent: one highlight, offset up-left, matching the core gradient. -->
+    <path d="M -10.4 -6.2 A 12.1 12.1 0 0 1 6.2 -10.4 A 15 15 0 0 0 -10.4 -6.2 Z"
+          fill="#FFF3C4" opacity="0.55"/>
+  </g>
+</svg>

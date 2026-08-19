@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Debug configuration for Sun Plugin CEP extension.
+  Enables Chrome DevTools debugging on port 8088.
+  Open chrome://inspect or http://localhost:8088 in Chrome to debug.
+-->
+<ExtensionList>
+  <Extension Id="com.sunplugin.premiere.panel">
+    <HostList>
+      <Host Name="PPRO" Port="8088"/>
+    </HostList>
+  </Extension>
+</ExtensionList>

@@ -1,0 +1,47 @@
+{
+  "$comment": "Production manifest. Identical to manifest.json except that network.domains is EMPTY and launchProcess is dropped. This is the manifest shipped when SUN_DEV_ASSETS=0, alongside a bundle that excludes src/dev-ingestor/ entirely. If the plugin still works with this manifest - and it does, because nothing in src/core performs network I/O - the removability claim in docs/DEVELOPMENT-ASSET-PLAN.md is demonstrated rather than asserted.",
+
+  "manifestVersion": 5,
+  "id": "com.sunplugin.premiere",
+  "name": "Sun Plugin",
+  "version": "0.1.0",
+  "main": "src/ui/index.html",
+
+  "host": [
+    {
+      "app": "premierepro",
+      "minVersion": "25.6.0",
+      "data": { "apiVersion": 2 }
+    }
+  ],
+
+  "requiredPermissions": {
+    "localFileSystem": "request",
+    "network": {
+      "domains": []
+    },
+    "clipboard": "readAndWrite",
+    "allowCodeGenerationFromStrings": false,
+    "ipc": { "enablePluginCommunication": false }
+  },
+
+  "entrypoints": [
+    {
+      "type": "panel",
+      "id": "sun.library",
+      "label": { "default": "Sun Library" },
+      "minimumSize": { "width": 320, "height": 400 },
+      "preferredDockedSize": { "width": 420, "height": 700 },
+      "preferredFloatingSize": { "width": 900, "height": 640 },
+      "icons": [
+        { "width": 23, "height": 23, "path": "assets/branding/icons/icon-23.png", "scale": [1, 2], "theme": ["darkest", "dark", "medium", "lightest", "light"] },
+        { "width": 46, "height": 46, "path": "assets/branding/icons/icon-46.png", "scale": [1, 2], "theme": ["darkest", "dark", "medium", "lightest", "light"] }
+      ]
+    }
+  ],
+
+  "icons": [
+    { "width": 48, "height": 48, "path": "assets/branding/icons/icon-48.png", "scale": [1, 2], "theme": ["darkest", "dark", "medium", "lightest", "light"], "species": ["pluginList"] },
+    { "width": 96, "height": 96, "path": "assets/branding/icons/icon-96.png", "scale": [1, 2], "theme": ["darkest", "dark", "medium", "lightest", "light"], "species": ["pluginList"] }
+  ]
+}

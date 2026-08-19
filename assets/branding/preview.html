@@ -1,0 +1,96 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>Sun Plugin — brand sheet</title>
+<style>
+  body { margin:0; font:14px/1.5 Inter, "Segoe UI", system-ui, sans-serif; background:#141518; color:#e8e9ec; }
+  .wrap { padding:28px 32px 48px; }
+  h1 { font-size:12px; font-weight:600; letter-spacing:.10em; text-transform:uppercase; opacity:.5; margin:30px 0 16px; }
+  h1:first-child { margin-top:0; }
+  .row { display:flex; align-items:flex-end; gap:30px; }
+  .cell { text-align:center; }
+  .cell small { display:block; margin-top:10px; opacity:.4; font-size:11px; }
+  .panel { padding:22px 26px; border-radius:12px; margin-bottom:12px; display:flex; align-items:center; gap:18px; }
+  .dark { background:#1e1f23; color:#f2f3f5; }
+  .light { background:#f4f4f6; color:#191a1d; }
+  .amber { color:#ffb02e; }
+  .swatches { display:flex; gap:10px; }
+  .sw { width:78px; height:56px; border-radius:8px; display:flex; align-items:flex-end; padding:6px; font-size:10px; font-family:ui-monospace, Consolas, monospace; }
+</style>
+<div class="wrap">
+
+<!-- One definition, instanced everywhere. -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <linearGradient id="core" x1="0.22" y1="0.06" x2="0.82" y2="0.98">
+      <stop offset="0" stop-color="#FFE07A"/><stop offset="0.42" stop-color="#FFB328"/><stop offset="1" stop-color="#F0641C"/>
+    </linearGradient>
+    <linearGradient id="ray" x1="0.5" y1="1" x2="0.5" y2="0">
+      <stop offset="0" stop-color="#FFB733"/><stop offset="1" stop-color="#FF8A1E"/>
+    </linearGradient>
+    <path id="rl" d="M -2.5 -18.6 L -1.05 -28.4 Q 0 -29.9 1.05 -28.4 L 2.5 -18.6 Z"/>
+    <path id="rs" d="M -1.9 -18.6 L -0.85 -24.6 Q 0 -25.8 0.85 -24.6 L 1.9 -18.6 Z"/>
+
+    <symbol id="sunColor" viewBox="0 0 64 64">
+      <g transform="translate(32 32)">
+        <g fill="url(#ray)">
+          <use href="#rl"/><use href="#rl" transform="rotate(60)"/><use href="#rl" transform="rotate(120)"/>
+          <use href="#rl" transform="rotate(180)"/><use href="#rl" transform="rotate(240)"/><use href="#rl" transform="rotate(300)"/>
+          <g opacity=".92">
+            <use href="#rs" transform="rotate(30)"/><use href="#rs" transform="rotate(90)"/><use href="#rs" transform="rotate(150)"/>
+            <use href="#rs" transform="rotate(210)"/><use href="#rs" transform="rotate(270)"/><use href="#rs" transform="rotate(330)"/>
+          </g>
+        </g>
+        <circle r="15" fill="url(#core)"/>
+        <path d="M -10.4 -6.2 A 12.1 12.1 0 0 1 6.2 -10.4 A 15 15 0 0 0 -10.4 -6.2 Z" fill="#FFF3C4" opacity=".55"/>
+      </g>
+    </symbol>
+
+    <symbol id="sunMono" viewBox="0 0 64 64">
+      <g transform="translate(32 32)" fill="currentColor">
+        <use href="#rl"/><use href="#rl" transform="rotate(60)"/><use href="#rl" transform="rotate(120)"/>
+        <use href="#rl" transform="rotate(180)"/><use href="#rl" transform="rotate(240)"/><use href="#rl" transform="rotate(300)"/>
+        <use href="#rs" transform="rotate(30)"/><use href="#rs" transform="rotate(90)"/><use href="#rs" transform="rotate(150)"/>
+        <use href="#rs" transform="rotate(210)"/><use href="#rs" transform="rotate(270)"/><use href="#rs" transform="rotate(330)"/>
+        <circle r="15"/>
+      </g>
+    </symbol>
+  </defs>
+</svg>
+
+  <h1>Icon at target sizes</h1>
+  <div class="row">
+    <div class="cell"><svg width="16" height="16"><use href="#sunColor"/></svg><small>16</small></div>
+    <div class="cell"><svg width="24" height="24"><use href="#sunColor"/></svg><small>24</small></div>
+    <div class="cell"><svg width="32" height="32"><use href="#sunColor"/></svg><small>32</small></div>
+    <div class="cell"><svg width="48" height="48"><use href="#sunColor"/></svg><small>48</small></div>
+    <div class="cell"><svg width="64" height="64"><use href="#sunColor"/></svg><small>64</small></div>
+    <div class="cell"><svg width="128" height="128"><use href="#sunColor"/></svg><small>128</small></div>
+  </div>
+
+  <h1>Lockup</h1>
+  <div class="panel dark">
+    <svg width="44" height="44"><use href="#sunColor"/></svg>
+    <div style="font-size:25px; letter-spacing:.04em"><b style="font-weight:700">SUN</b><span style="font-weight:300; opacity:.7"> Plugin</span></div>
+  </div>
+  <div class="panel light">
+    <svg width="44" height="44"><use href="#sunColor"/></svg>
+    <div style="font-size:25px; letter-spacing:.04em"><b style="font-weight:700">SUN</b><span style="font-weight:300; opacity:.65"> Plugin</span></div>
+  </div>
+
+  <h1>Monochrome — host-tinted panel tab</h1>
+  <div class="panel dark amber">
+    <svg width="16" height="16"><use href="#sunMono"/></svg>
+    <svg width="20" height="20"><use href="#sunMono"/></svg>
+    <svg width="24" height="24"><use href="#sunMono"/></svg>
+    <span style="opacity:.5; font-size:12px; color:#e8e9ec">inherits currentColor</span>
+  </div>
+
+  <h1>Palette</h1>
+  <div class="swatches">
+    <div class="sw" style="background:#FFE07A; color:#5a3d00">#FFE07A</div>
+    <div class="sw" style="background:#FFB328; color:#5a3d00">#FFB328</div>
+    <div class="sw" style="background:#FF8A1E; color:#4d2200">#FF8A1E</div>
+    <div class="sw" style="background:#F0641C; color:#fff">#F0641C</div>
+    <div class="sw" style="background:#1e1f23; color:#9a9ba0; border:1px solid #2c2d32">#1E1F23</div>
+  </div>
+</div>
