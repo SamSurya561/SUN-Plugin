@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 
-const VERSION = '0.4.0';
+const VERSION = '0.5.0';
 const host = window.sunHost || null;
 
 /* ────────────────────── Inline SVG Icons (no external deps needed) ─── */

@@ -10,6 +10,9 @@
       ],
       "categories": [
         "titles",
+        "words",
+        "letters",
+        "lines",
         "lower-thirds",
         "captions",
         "kinetic-typography",
@@ -497,6 +500,18 @@
       "headline",
       "intro",
       "opener"
+    ],
+    "words": [
+      "words",
+      "word"
+    ],
+    "letters": [
+      "letters",
+      "letter"
+    ],
+    "lines": [
+      "lines",
+      "line"
     ],
     "social": [
       "social",
