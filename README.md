@@ -72,4 +72,4 @@ Your library lives entirely separate from the plugin's install directory, ensuri
 
 Ready to get started? Download the latest installer from the GitHub Releases page:
 
-**[👉 Download Latest Release (v0.4.0) 👈](https://github.com/SamSurya561/SUN-Plugin/releases/latest)**
+**[👉 Download Latest Release (v0.5.0) 👈](https://github.com/SamSurya561/SUN-Plugin/releases/latest)**
