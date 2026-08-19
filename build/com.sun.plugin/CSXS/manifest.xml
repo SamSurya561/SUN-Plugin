@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ExtensionManifest Version="12.0"
+                   ExtensionBundleId="com.sun.plugin"
+                   ExtensionBundleVersion="0.3.0"
+                   ExtensionBundleName="SUN Plugin">
+
+  <ExtensionList>
+    <Extension Id="com.sun.plugin.panel" Version="0.3.0"/>
+  </ExtensionList>
+
+  <ExecutionEnvironment>
+    <HostList>
+      <!-- Premiere Pro 22.0 (2022) through future versions -->
+      <Host Name="PPRO" Version="[22.0,99.9]"/>
+    </HostList>
+    <LocaleList>
+      <Locale Code="All"/>
+    </LocaleList>
+    <RequiredRuntimeList>
+      <RequiredRuntime Name="CSXS" Version="11.0"/>
+    </RequiredRuntimeList>
+  </ExecutionEnvironment>
+
+  <DispatchInfoList>
+    <Extension Id="com.sun.plugin.panel">
+      <DispatchInfo>
+        <Resources>
+          <MainPath>./index.html</MainPath>
+          <ScriptPath>./jsx/premiere.jsx</ScriptPath>
+          <CEFCommandLine>
+            <Parameter>--enable-nodejs</Parameter>
+            <Parameter>--allow-file-access-from-files</Parameter>
+            <Parameter>--allow-file-access</Parameter>
+          </CEFCommandLine>
+        </Resources>
+        <Lifecycle>
+          <AutoVisible>true</AutoVisible>
+        </Lifecycle>
+        <UI>
+          <Type>Panel</Type>
+          <Menu>SUN Plugin</Menu>
+          <Geometry>
+            <Size>
+              <Width>420</Width>
+              <Height>700</Height>
+            </Size>
+            <MinSize>
+              <Width>320</Width>
+              <Height>400</Height>
+            </MinSize>
+            <MaxSize>
+              <Width>1920</Width>
+              <Height>1200</Height>
+            </MaxSize>
+          </Geometry>
+          <Icons>
+            <Icon Type="Normal">./icons/icon-23.png</Icon>
+            <Icon Type="RollOver">./icons/icon-46.png</Icon>
+          </Icons>
+        </UI>
+      </DispatchInfo>
+    </Extension>
+  </DispatchInfoList>
+</ExtensionManifest>

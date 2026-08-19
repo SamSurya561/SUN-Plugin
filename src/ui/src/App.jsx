@@ -81,6 +81,7 @@ export default function App() {
   const [status, setStatus] = useState('Ready');
   const [sortBy, setSortBy] = useState('name');
   const [draggingId, setDraggingId] = useState(null);
+  const [showSettings, setShowSettings] = useState(false);
   const searchRef = useRef(null);
   const ghostRef = useRef(null);
 
@@ -254,7 +255,7 @@ export default function App() {
           <button onClick={handleImport} className="flex items-center gap-1.5 px-3 py-1.5 bg-gradient-to-r from-amber-500 to-orange-600 text-black font-semibold rounded-2xl text-[12px] hover:brightness-110 active:scale-[0.97] transition-all">
             <Icons.download size={13} /> Import
           </button>
-          <button className="p-1.5 text-zinc-500 hover:text-zinc-300 hover:bg-zinc-800 rounded-xl transition-all">
+          <button onClick={() => setShowSettings(true)} className="p-1.5 text-zinc-500 hover:text-zinc-300 hover:bg-zinc-800 rounded-xl transition-all">
             <Icons.settings size={15} />
           </button>
         </div>
@@ -368,7 +369,7 @@ export default function App() {
                 </p>
               </div>
             ) : (
-              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3">
+              <div className="grid gap-3" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(130px, 1fr))' }}>
                 {assets.map(asset => {
                   const thumb = getThumb(asset);
                   const isSel = selected && selected.id === asset.id;
@@ -459,7 +460,7 @@ export default function App() {
             <div className="p-3">
               <div className="w-full aspect-video bg-zinc-950 rounded-2xl overflow-hidden flex items-center justify-center border border-zinc-800/30">
                 {getThumb(selected) ? (
-                  <img src={getThumb(selected)} alt="" className="w-full h-full object-cover" />
+                  <img src={getThumb(selected)} alt="" className="w-full h-full object-contain" />
                 ) : (
                   <TypeIcon type={selected.type} size={32} className="text-zinc-700" />
                 )}
@@ -547,6 +548,46 @@ export default function App() {
           </span>
         </div>
       </footer>
+
+      {/* ─── SETTINGS MODAL ───────────────────────────────────── */}
+      {showSettings && (
+        <div className="absolute inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 animate-fade-in">
+          <div className="bg-[#121214] border border-zinc-800/80 rounded-2xl w-full max-w-sm shadow-2xl overflow-hidden flex flex-col">
+            <div className="flex items-center justify-between px-4 py-3 border-b border-zinc-800/50">
+              <span className="font-bold text-[14px] text-zinc-100">Settings</span>
+              <button onClick={() => setShowSettings(false)} className="text-zinc-500 hover:text-zinc-300">
+                <Icons.x size={16} />
+              </button>
+            </div>
+            <div className="p-4 flex flex-col gap-4 text-[12px]">
+              <div className="flex flex-col gap-1.5">
+                <label className="text-zinc-400 font-semibold uppercase tracking-wider text-[10px]">Library Root Folder</label>
+                <div className="flex items-center gap-2">
+                  <input readOnly value="Documents/Sun Plugin/Library" className="flex-1 bg-zinc-900 border border-zinc-800 rounded-xl px-3 py-2 text-zinc-300 focus:outline-none" />
+                  <button className="px-3 py-2 bg-zinc-800 hover:bg-zinc-700 text-zinc-300 rounded-xl transition-all">Change</button>
+                </div>
+              </div>
+              
+              <div className="flex flex-col gap-1.5 mt-2">
+                <label className="text-zinc-400 font-semibold uppercase tracking-wider text-[10px]">Preferences</label>
+                <label className="flex items-center gap-2 text-zinc-300 cursor-pointer">
+                  <input type="checkbox" defaultChecked className="accent-amber-500 w-3 h-3" />
+                  Show tooltips on hover
+                </label>
+                <label className="flex items-center gap-2 text-zinc-300 cursor-pointer">
+                  <input type="checkbox" defaultChecked className="accent-amber-500 w-3 h-3" />
+                  Auto-scan library on startup
+                </label>
+              </div>
+
+              <div className="mt-4 pt-4 border-t border-zinc-800/50 flex flex-col items-center gap-2">
+                <SunLogo size={32} />
+                <span className="text-[11px] text-zinc-500">SUN Plugin v{VERSION}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

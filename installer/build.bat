@@ -30,10 +30,10 @@ if errorlevel 1 (
 REM Step 2: Run Inno Setup
 if "%1"=="--install" (
     echo [2/2] Installing directly...
-    node tools\build-cep.js --install
+    node tools\build-cep.js --install --skip-build
 ) else (
     echo [2/2] Building installer with Inno Setup...
-    node tools\build-cep.js --installer
+    node tools\build-cep.js --installer --skip-build
 )
 
 if errorlevel 1 (
