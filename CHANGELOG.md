@@ -2,6 +2,14 @@
 
 All notable changes to the SUN Plugin will be documented in this file.
 
+## [0.4.0] - 2026-08-20
+
+### Added
+- **Seamless UI Resizing**: Fixed grid constraints so the UI properly spans the entire width of the Premiere Pro panel.
+- **Optimized Asset Import**: Switched the `Import` button to use a native OS file picker, preventing UI freezes caused by large library scans.
+- **Create Template Alternative**: Added a "Create Template" button that guides users to natively export presets/MOGRTs, with an instant ingest feature to bypass Adobe's ExtendScript limitations.
+- **Thumbnail Cropping Fix**: Updated preview thumbnails to use `object-contain` instead of `object-cover` so text/overlays display fully in the details panel.
+
 ## [0.3.0] - 2026-08-19
 
 ### Added

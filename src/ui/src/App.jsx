@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 
-const VERSION = '0.3.0';
+const VERSION = '0.4.0';
 const host = window.sunHost || null;
 
 /* ────────────────────── Inline SVG Icons (no external deps needed) ─── */
@@ -82,6 +82,7 @@ export default function App() {
   const [sortBy, setSortBy] = useState('name');
   const [draggingId, setDraggingId] = useState(null);
   const [showSettings, setShowSettings] = useState(false);
+  const [showTemplateModal, setShowTemplateModal] = useState(false);
   const searchRef = useRef(null);
   const ghostRef = useRef(null);
 
@@ -189,10 +190,28 @@ export default function App() {
   /* ── Import ────────────────────────────────────────────────────── */
   const handleImport = useCallback(async () => {
     if (!host) return;
-    setStatus('Scanning library...');
-    const r = await host.command('import');
-    setStatus(r?.ok ? `Imported ${r.imported || 0} assets` : (r?.error || 'Import failed'));
-    fetchAssets();
+    setStatus('Selecting files...');
+    const r = await host.command('import-dialog');
+    if (r?.ok) {
+        setStatus(`Imported ${r.imported || 0} assets`);
+        fetchAssets();
+    } else {
+        setStatus(r?.error || 'Import cancelled or failed');
+    }
+    setTimeout(() => setStatus('Ready'), 3000);
+  }, [fetchAssets]);
+
+  const handleTemplateImport = useCallback(async () => {
+    if (!host) return;
+    setStatus('Waiting for file...');
+    const r = await host.command('import-dialog');
+    if (r?.ok) {
+        setStatus(`Template imported!`);
+        setShowTemplateModal(false);
+        fetchAssets();
+    } else {
+        setStatus(r?.error || 'Import cancelled');
+    }
     setTimeout(() => setStatus('Ready'), 3000);
   }, [fetchAssets]);
 
@@ -217,7 +236,7 @@ export default function App() {
 
   /* ════════════════════════ RENDER ═══════════════════════════════ */
   return (
-    <div className="h-full flex flex-col bg-[#0a0a0b] text-zinc-200 text-[13px] overflow-hidden select-none">
+    <div className="h-full w-full flex flex-col bg-[#0a0a0b] text-zinc-200 text-[13px] overflow-hidden select-none">
       {/* Drag ghost element */}
       <div ref={ghostRef} className="drag-ghost" aria-hidden="true" />
 
@@ -252,6 +271,9 @@ export default function App() {
 
         {/* Actions */}
         <div className="flex items-center gap-1.5 shrink-0">
+          <button onClick={() => setShowTemplateModal(true)} className="flex items-center gap-1.5 px-3 py-1.5 bg-zinc-800 text-zinc-200 font-semibold rounded-2xl text-[12px] hover:bg-zinc-700 active:scale-[0.97] transition-all border border-zinc-700">
+            <Icons.wand size={13} /> Create Template
+          </button>
           <button onClick={handleImport} className="flex items-center gap-1.5 px-3 py-1.5 bg-gradient-to-r from-amber-500 to-orange-600 text-black font-semibold rounded-2xl text-[12px] hover:brightness-110 active:scale-[0.97] transition-all">
             <Icons.download size={13} /> Import
           </button>
@@ -583,6 +605,41 @@ export default function App() {
               <div className="mt-4 pt-4 border-t border-zinc-800/50 flex flex-col items-center gap-2">
                 <SunLogo size={32} />
                 <span className="text-[11px] text-zinc-500">SUN Plugin v{VERSION}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ─── CREATE TEMPLATE MODAL ─────────────────────────────── */}
+      {showTemplateModal && (
+        <div className="absolute inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 animate-fade-in">
+          <div className="bg-[#121214] border border-zinc-800/80 rounded-2xl w-full max-w-md shadow-2xl overflow-hidden flex flex-col">
+            <div className="flex items-center justify-between px-4 py-3 border-b border-zinc-800/50">
+              <span className="font-bold text-[14px] text-zinc-100 flex items-center gap-2"><Icons.wand size={16} className="text-amber-500" /> Create Template</span>
+              <button onClick={() => setShowTemplateModal(false)} className="text-zinc-500 hover:text-zinc-300">
+                <Icons.x size={16} />
+              </button>
+            </div>
+            <div className="p-5 flex flex-col gap-4 text-[13px] text-zinc-300">
+              <p>Adobe Premiere Pro scripts cannot automatically export presets or timeline elements. To create a template:</p>
+              
+              <div className="flex flex-col gap-2 bg-zinc-900/50 p-3 rounded-xl border border-zinc-800/50">
+                <div className="flex gap-3">
+                  <span className="w-5 h-5 rounded-full bg-zinc-800 flex items-center justify-center text-[10px] font-bold shrink-0">1</span>
+                  <p>In Premiere Pro, manually export your graphic as a <strong>.mogrt</strong> or your effects as a <strong>.prfpset</strong> (preset).</p>
+                </div>
+                <div className="flex gap-3 mt-1">
+                  <span className="w-5 h-5 rounded-full bg-amber-500/20 text-amber-500 flex items-center justify-center text-[10px] font-bold shrink-0">2</span>
+                  <p>Click the <strong>Browse</strong> button below to instantly ingest the exported file into your SUN library.</p>
+                </div>
+              </div>
+
+              <div className="flex justify-end gap-2 mt-2">
+                <button onClick={() => setShowTemplateModal(false)} className="px-4 py-2 bg-zinc-800 hover:bg-zinc-700 text-zinc-300 rounded-xl transition-all">Cancel</button>
+                <button onClick={handleTemplateImport} className="px-4 py-2 bg-gradient-to-r from-amber-500 to-orange-600 text-black font-semibold rounded-xl hover:brightness-110 active:scale-[0.97] transition-all flex items-center gap-1.5">
+                  <Icons.download size={14} /> Browse & Ingest File
+                </button>
               </div>
             </div>
           </div>

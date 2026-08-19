@@ -185,11 +185,42 @@
 
             switch (cmd) {
                 case "import": {
-                    // In CEP we can open a native folder picker via Node.js.
-                    // For now, scan the existing library.
+                    // Legacy bulk scan
                     var result = plugin.scan({});
                     plugin.save();
                     return { ok: true, imported: result.added || 0 };
+                }
+
+                case "import-dialog": {
+                    // Open native OS file picker via CEP
+                    if (!window.cep || !window.cep.fs || !window.cep.fs.showOpenDialog) {
+                        return { ok: false, error: "Native file picker not available in this context." };
+                    }
+                    var result = window.cep.fs.showOpenDialog(
+                        true, // allowMultipleSelection
+                        false, // chooseDirectory
+                        "Select Assets to Import", // title
+                        "", // initialPath
+                        ["mogrt", "prfpset", "mp4", "mov", "png", "jpg", "wav", "mp3", "cube", "look"] // fileTypes
+                    );
+                    
+                    if (result.err !== 0 || !result.data || result.data.length === 0) {
+                        return { ok: false, error: "Import cancelled" };
+                    }
+                    
+                    var importedCount = 0;
+                    for (var i = 0; i < result.data.length; i++) {
+                        // plugin.importFile will copy to library and index it
+                        var fileRes = plugin.importFile(result.data[i]);
+                        if (fileRes && fileRes.ok) importedCount++;
+                    }
+                    
+                    if (importedCount > 0) {
+                        plugin.save();
+                        return { ok: true, imported: importedCount };
+                    } else {
+                        return { ok: false, error: "Could not import selected files" };
+                    }
                 }
 
                 case "replace": {
