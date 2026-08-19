@@ -18,8 +18,8 @@ echo ========================================
 echo.
 
 REM Step 1: Build the CEP extension
-echo [1/2] Building CEP extension...
-node tools\build-cep.js
+echo [1/2] Building CEP extension and React UI...
+call npm run build
 if errorlevel 1 (
     echo.
     echo ERROR: Build failed.
