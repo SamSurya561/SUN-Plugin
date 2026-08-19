@@ -39,7 +39,7 @@ ArchitecturesAllowed=x64compatible
 ArchitecturesInstallIn64BitMode=x64compatible
 ; Uninstall
 Uninstallable=yes
-UninstallDisplayIcon={app}\icons\icon-48.png
+UninstallDisplayIcon={uninstallexe}
 UninstallDisplayName={#MyAppName} for Premiere Pro
 
 [Languages]
