@@ -65,3 +65,11 @@ Your library lives entirely separate from the plugin's install directory, ensuri
 * **UI**: React 18, Tailwind CSS, Vite
 * **Host**: Adobe CEP (Common Extensibility Platform) / Node.js
 * **Engine**: Adobe ExtendScript (`.jsx`) for Premiere Pro interactions
+
+---
+
+## 📥 Download
+
+Ready to get started? Download the latest installer from the GitHub Releases page:
+
+**[👉 Download Latest Release (v0.4.0) 👈](https://github.com/SamSurya561/SUN-Plugin/releases/latest)**
