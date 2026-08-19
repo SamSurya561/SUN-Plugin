@@ -5,7 +5,7 @@
                    ExtensionBundleName="SUN Plugin">
 
   <ExtensionList>
-    <Extension Id="com.sun.plugin.panel" Version="0.4.0"/>
+    <Extension Id="com.sun.plugin.panel" Version="0.5.0"/>
   </ExtensionList>
 
   <ExecutionEnvironment>

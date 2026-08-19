@@ -155,39 +155,14 @@ export default function App() {
   const handleDragStart = useCallback((e, asset) => {
     setDraggingId(asset.id);
 
-    // Resolve the absolute file path
+    // Set the file path for Premiere Pro's native drop handler
     let absPath = null;
     if (host && host.toAbsolute && asset.file) {
       absPath = host.toAbsolute(asset.file);
     }
-
-    // Use CEP's native startDrag API — this is the ONLY way to drag files
-    // from a CEP panel onto the Premiere Pro timeline. HTML5 drag does not work.
-    if (absPath && typeof window.__adobe_cep__ !== 'undefined' && window.__adobe_cep__.startDrag) {
-      e.preventDefault();
-      const xmlPayload = `<payload>
-        <DragData type="file">
-          <FilePath>${absPath.replace(/\\/g, '/')}</FilePath>
-        </DragData>
-      </payload>`;
-      window.__adobe_cep__.startDrag(xmlPayload);
-      setStatus(`Dragging: ${asset.name}`);
-      return;
-    }
-
-    // Fallback for non-CEP: set HTML5 drag data
     if (absPath) {
       e.dataTransfer.setData('com.adobe.cep.dnd.file.0', absPath);
-      e.dataTransfer.setData('text/plain', absPath);
       e.dataTransfer.effectAllowed = 'copy';
-    }
-
-    // Custom drag ghost showing the asset name
-    if (ghostRef.current) {
-      ghostRef.current.textContent = asset.name;
-      ghostRef.current.style.top = '-100px';
-      ghostRef.current.style.left = '-100px';
-      e.dataTransfer.setDragImage(ghostRef.current, 0, 0);
     }
 
     setStatus(`Dragging: ${asset.name}`);
@@ -760,7 +735,7 @@ export default function App() {
                 onClick={() => handleInsert(selected.id)}
                 className="w-full py-2 bg-gradient-to-r from-amber-500 to-orange-600 text-black font-semibold rounded-2xl text-[12px] hover:brightness-110 active:scale-[0.98] transition-all"
               >
-                Insert at Playhead
+                Import to Timeline
               </button>
               <div className="flex gap-2">
                 <button
